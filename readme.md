@@ -1,2 +1,0 @@
-# sqtp
-## section 1
