@@ -1,0 +1,329 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						10,
+						11,
+						12
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "libsqtp",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libsqtp",
+					"targetIndexes" : 
+					[
+						8
+					]
+				},
+				{
+					"build" : "libsqbz",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libsqbz",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "liboffer",
+					"childIndexes" : 
+					[
+						4,
+						5,
+						6,
+						7,
+						8,
+						9
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "liboffer"
+				},
+				{
+					"build" : "liboffer/plug_md_replay",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "liboffer/plug_md_replay",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "liboffer/plug_td_sim_driver",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "liboffer/plug_td_sim_driver",
+					"targetIndexes" : 
+					[
+						6
+					]
+				},
+				{
+					"build" : "liboffer/plug_td_sim_by_quot",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "liboffer/plug_td_sim_by_quot",
+					"targetIndexes" : 
+					[
+						5
+					]
+				},
+				{
+					"build" : "liboffer/plug_bz_md_store",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "liboffer/plug_bz_md_store",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "liboffer/plug_bz_md_post",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "liboffer/plug_bz_md_post",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "liboffer/plug_bz_stock_fe",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "liboffer/plug_bz_stock_fe",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "libframe",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libframe",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "libsqbz/test",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libsqbz/test",
+					"targetIndexes" : 
+					[
+						9
+					]
+				},
+				{
+					"build" : "libsqtp/test",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "libsqtp/test",
+					"targetIndexes" : 
+					[
+						10
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					],
+					"name" : "sqtp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 10,
+					"id" : "frame::@1156e892d04a206339f8",
+					"jsonFile" : "target-frame-Debug-85b1f1004cfd50496cb3.json",
+					"name" : "frame",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "plug_bz_md_post::@7c36cdda60d91aaa7236",
+					"jsonFile" : "target-plug_bz_md_post-Debug-01f5fa5ee7ac8d4c7716.json",
+					"name" : "plug_bz_md_post",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "plug_bz_md_store::@c6d7e08f66a5418c9ba6",
+					"jsonFile" : "target-plug_bz_md_store-Debug-5e12aea1ce7e06e5c031.json",
+					"name" : "plug_bz_md_store",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "plug_bz_stock_fe::@67b8036c29aeeaeb821a",
+					"jsonFile" : "target-plug_bz_stock_fe-Debug-130cffb52dcd60ded2ec.json",
+					"name" : "plug_bz_stock_fe",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "plug_md_replay::@7e3f4976dd09c6e70562",
+					"jsonFile" : "target-plug_md_replay-Debug-4c377f6e025886810aa2.json",
+					"name" : "plug_md_replay",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "plug_td_sim_by_quot::@6ea6c1beb4c60834e5af",
+					"jsonFile" : "target-plug_td_sim_by_quot-Debug-84224fba87778c510ce3.json",
+					"name" : "plug_td_sim_by_quot",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "plug_td_sim_driver::@c5141db1657585e160e4",
+					"jsonFile" : "target-plug_td_sim_driver-Debug-9dcb13756c6a1ad96c5a.json",
+					"name" : "plug_td_sim_driver",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "sqbz::@e200e2f178a4ad857952",
+					"jsonFile" : "target-sqbz-Debug-d325dfe0e15a4db89be7.json",
+					"name" : "sqbz",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "sqtp::@e2fbe6cf6739f7fb1c5e",
+					"jsonFile" : "target-sqtp-Debug-e3ba9af390d1bf07c7b7.json",
+					"name" : "sqtp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "test_sqbz::@4988ab7706701730f515",
+					"jsonFile" : "target-test_sqbz-Debug-551100e979f66b809f4f.json",
+					"name" : "test_sqbz",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "test_sqtp::@139e7472bdb122eb74bc",
+					"jsonFile" : "target-test_sqtp-Debug-e55ec20bd69e9973cd5b.json",
+					"name" : "test_sqtp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/hehong/github/hehong/sqtp_cpp/build",
+		"source" : "/Users/hehong/github/hehong/sqtp_cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

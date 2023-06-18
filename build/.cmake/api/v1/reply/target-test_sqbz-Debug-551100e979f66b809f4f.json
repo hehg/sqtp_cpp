@@ -1,0 +1,232 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "/Users/hehong/github/hehong/sqtp_cpp/bin/test_sqbz"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"link_directories",
+			"include",
+			"TARGET_LINK_LIBRARIES",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"libsqbz/test/CMakeLists.txt",
+			"head.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 13,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 4,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 47,
+				"parent" : 3
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 48,
+				"parent" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 16,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 41,
+				"parent" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 42,
+				"parent" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 45,
+				"parent" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -std=c++11 -g -fPIC   -std=c++11 -g -fPIC  -g -fprofile-arcs -ftest-coverage  -O0  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.1  "
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 7,
+					"define" : "MAC"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 8,
+					"path" : "/usr/local/Cellar/openssl@1.1/1.1.1d/include"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "/Users/hehong/github/hehong/sqtp_cpp/../libsqtp/third"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "/Users/hehong/github/hehong/sqtp_cpp/libsqtp/include"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/Users/hehong/github/hehong/sqtp_cpp/libsqbz/include"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 6,
+			"id" : "sqbz::@e200e2f178a4ad857952"
+		},
+		{
+			"backtrace" : 6,
+			"id" : "sqtp::@e2fbe6cf6739f7fb1c5e"
+		}
+	],
+	"id" : "test_sqbz::@4988ab7706701730f515",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-std=c++11 -g -fPIC   -std=c++11 -g -fPIC  -g -fprofile-arcs -ftest-coverage  -O0",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-L/usr/local/opt/python@3.8/lib",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "-L/Users/hehong/github/hehong/sqtp_cpp/lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-L/Users/hehong/github/hehong/sqtp_cpp/lib/third",
+				"role" : "libraryPath"
+			},
+			{
+				"fragment" : "-Wl,-rpath,/Users/hehong/github/hehong/sqtp_cpp/lib -Wl,-rpath,/Users/hehong/github/hehong/sqtp_cpp/lib/third",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "../libsqbz.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "../../../lib/libsqtp.a",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "test_sqbz",
+	"nameOnDisk" : "test_sqbz",
+	"paths" : 
+	{
+		"build" : "libsqbz/test",
+		"source" : "libsqbz/test"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libsqbz/test/main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libsqbz/test/test_quot_file.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libsqbz/test/test_table.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}
