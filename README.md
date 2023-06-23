@@ -40,8 +40,8 @@
 
 ### 下一步开发计划
 1. libframe 提供python接口
-2. libfram  提供 定时器接口
-3. 
+2. libframe 提供 定时器接口
+3. 对目前代码完善单体测试用例，覆盖率到 80%
 4.  
 
 6. liboffer 增加 ctp 插件
