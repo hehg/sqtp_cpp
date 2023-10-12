@@ -29,14 +29,22 @@ namespace sq{
 			msg);
 
 		m_tmp_buf[sizeof(m_tmp_buf) - 1] = '\0';
-
-        for (auto t : m_targets) {
-            t->log(m_tmp_buf);
-            if (lvl <= m_flush_level) {
-                t->flush();
+        if (!m_targets.empty())
+        {
+            for (auto &t : m_targets)
+            {
+                t->log(m_tmp_buf);
+                if (lvl <= m_flush_level)
+                {
+                    t->flush();
+                }
             }
         }
-		//屏幕输出一下
+        else{
+            std::cout<<m_tmp_buf;
+        }
+
+        //屏幕输出一下
 		if (lvl == log_fata) {
 			fprintf(stderr, "%s", m_tmp_buf);
 			fflush(stderr);

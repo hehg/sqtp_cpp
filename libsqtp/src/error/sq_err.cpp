@@ -67,7 +67,7 @@ namespace sq
         def_error_code(err_invalid_package),
         def_error_code(err_invalid_param),
         def_error_code(err_again),
-
+        def_error_code(err_sql_exec),
 		//offer
 		def_error_code(err_no_exit_order),
 		def_error_code(err_no_login),

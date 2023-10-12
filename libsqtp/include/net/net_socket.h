@@ -2,7 +2,7 @@
 #include "sq_define.h"
 #include "sq_types.h"
 #include "net_init.hpp"
-#if (defined MAC)
+#if (defined __APPLE__)
 
 struct mmsghdr
 {
@@ -73,7 +73,7 @@ namespace sq
 
 	int enable_multi_cast_loop(fd_t socket, bool enable);
 
-#if (defined WINDOWS || defined MAC)
+#if (defined WINDOWS || defined __APPLE__)
 	int socketpair(int domain, int type, int protocol, int sv[2], int signaler_port = 65530);
 
 	int32_t recvmsg(fd_t socket, struct msghdr *msg, unsigned int flags);

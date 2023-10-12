@@ -23,7 +23,7 @@ namespace sq
         
         int32_t read_all_line(line_list_t &lists);
 	private:
-		bool read_line(char *buf, int buflen);
+		int read_line(char *buf, int buflen);
 		void write_line(const char* buf);
 	private:
 		FILE* m_file;
@@ -64,7 +64,7 @@ namespace sq
         csv_file_reader(){}
 		~csv_file_reader(){}
 
-        bool open(string path, bool has_head);
+        bool open(string path, bool has_head=true);
 		
 		void set_header(vector<string> heads);
         //读取一行数据到field中

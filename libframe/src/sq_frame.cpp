@@ -18,6 +18,7 @@ using namespace sq;
 struct trade_msg_data{
 		int tid;
 		int size;
+		int from_id;
 		char data[512];
 	};
 extern void load_md_plugs(const char*);
@@ -35,6 +36,7 @@ static bool m_run_flag=false;
 static sq_frame_callback_func_t  s_callback_func = nullptr;
 static sq_frame_callback_js_func_t  s_callback_js_func = nullptr;
 static void * s_callback_param=nullptr;
+
 static sq_ts_change s_ts_change;
 static  object_pool<trade_msg_data>* m_msg_pool;
 static  shared_queue<trade_msg_data> m_trade_msg_queue;
@@ -46,36 +48,29 @@ static  sq::trade_time_t  s_cur_time_str;
 //插件回调数据
 void plugs_callback_func(uint16_t tid, char*data, uint16_t size, void*param, int plug_id)
 {
+	//todo 这里需要加锁
 	if(!m_run_flag){
 		return;
 	}
 	
-	if(tid==tid_market_data){
-		sq_quot*quot=(sq_quot*)data;
-		uint64_t cur_time = sq::datetime_to_int(quot->time.data());
-		s_ts_change.goto_time(cur_time);
-		s_cur_time_int = cur_time;
-		s_cur_time_str = quot->time;
-	}
-	//传给db
-	sq_mdb_put(tid,data,size);
-
-	//传给业务插件
-	for (auto &it : m_bz_plugs)
-	{
-		if (it->plug_id_ != plug_id)
-		{
-			it->plug_put(tid, data, size);
-		}
-	}
+	// if(tid==tid_market_data){
+	// 	sq_quot*quot=(sq_quot*)data;
+	// 	uint64_t cur_time = sq::datetime_to_int(quot->time.data());
+	// 	s_ts_change.goto_time(cur_time);
+	// 	s_cur_time_int = cur_time;
+	// 	s_cur_time_str = quot->time;
+	// }
+	
 	//发给应用
 	trade_msg_data *msg = m_msg_pool->alloc();
 	msg->tid = tid;
 	msg->size = size;
+	msg->from_id=plug_id;
 	assert(size<=sizeof(trade_msg_data::data));
 	memcpy(msg->data, data, msg->size);
 	m_trade_msg_queue.push(msg);
 }
+//todo 这个要用一个服务或插件来实现
 static void trade_state_changed(const char* name,int type)
 {
    //构造一个状态切换消息
@@ -120,42 +115,61 @@ static void trade_state_changed(const char* name,int type)
 	#endif
 }
 
-void init_frame()
+static void init_frame()
 {
-	m_msg_pool=new  object_pool<trade_msg_data>(1000,100);
+	m_msg_pool = new object_pool<trade_msg_data>(1000, 100);
+
+	// 读取xml配置文件
 	using namespace rapidxml;
-	rapidxml::file<> fdoc(m_config_path.c_str());
-	rapidxml::xml_document<> doc;
-	doc.parse<0>(fdoc.data());
-
-	xml_node<> *root = doc.first_node();
-	xml_node<> *app = root->first_node("app");
-	auto log_level=app->first_node("log_level");
-	auto log_name=app->first_node("log_name");
-
-	//init log
-	if(log_level)
+	try
 	{
-		to_log_level(log_level->value());
-	}
-	if(log_name){
-		std::string name=log_name->value();
-		if(name!=""&&name!="stdout"){
-			string log_path = name+".log";
-			s_log.add_file_target(log_path.c_str());
+		rapidxml::file<> fdoc(m_config_path.c_str());
+		rapidxml::xml_document<> doc;
+		doc.parse<0>(fdoc.data());
+
+		xml_node<> *root = doc.first_node();
+		xml_node<> *app = root->first_node("app");
+		auto log_level = app->first_node("log_level");
+		auto log_name = app->first_node("log_name");
+
+		// init log
+		if (log_level)
+		{
+			to_log_level(log_level->value());
 		}
-		else{
-			s_log.add_stdout_target();			
+		if (log_name)
+		{
+			std::string name = log_name->value();
+			if (name != "" && name != "stdout")
+			{
+				string log_path = name + ".log";
+				s_log.add_file_target(log_path.c_str());
+			}
+			else
+			{
+				s_log.add_stdout_target();
+			}
 		}
-			
+		else
+		{
+			s_log.add_stdout_target();
+		}
 	}
-	else{
-		s_log.add_stdout_target();
+	catch (const std::exception &e)
+	{
+		log_error("open config fiel fail,file={}\n",m_config_path.c_str());
+		std::cerr << e.what() << '\n';
+		assert(false);
 	}
+
 	m_trade_msg_queue.empty();
 }
-int sq_frame_open()
+
+int sq_frame_open(const char*cfg_path)
 {
+	if(cfg_path){
+		m_config_path=cfg_path;
+	}
 	//加载配置信息
 	init_frame();
 	//创建内存数据表
@@ -182,6 +196,10 @@ int sq_frame_open()
 	return ok;
 }
 
+/**
+ * 框架内部的线程，负责从应答队列中取出信息回调给上一层
+ * 框架的所有业务处理逻辑都在此函数进行
+*/
 void sq_frame_run()
 {
 	while (true)
@@ -198,10 +216,28 @@ void sq_frame_run()
 		trade_msg_data *msg = nullptr;
 		if (m_trade_msg_queue.try_and_pop(msg))
 		{
+			int tid=msg->tid;
+			char*data= msg->data;
+			int size= msg->size;
+			int plug_id=msg->from_id;
+			// 传给db
+			sq_mdb_put(tid, data, size);
+
+			// 传给业务插件
+			for (auto &it : m_bz_plugs)
+			{
+				if (it->plug_id_ != plug_id)
+				{
+					it->plug_put(tid, data, size);
+				}
+			}
+			//传给应用
 			if(s_callback_func)
 			{
 				s_callback_func(msg->tid, msg->data, msg->size, s_callback_param);
 			}
+	#if 0
+			//使用json 回调方式，框架负责转成json 回调给上层
 			else if(s_callback_js_func){
 				
 				if(msg->tid==tid_market_data){
@@ -227,7 +263,7 @@ void sq_frame_run()
 					s_callback_js_func(msg->tid, (char*)s.c_str());
 				}
 			}
-				
+		#endif
 
 			m_msg_pool->free(msg);
 		}
@@ -235,7 +271,7 @@ void sq_frame_run()
 			SQ_LOG_FLUSH();
 		}
 	}
-
+	//线程结束了，卸载各个插件
 	unload_bz_plugs();
 	unload_td_plugs();
 	unload_md_plugs();

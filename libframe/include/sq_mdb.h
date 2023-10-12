@@ -1,3 +1,6 @@
+/**
+ * @brief 所有内存数据都要由文件统一控制
+*/
 #ifndef SQ_MDB_H
 #define SQ_MDB_H
 

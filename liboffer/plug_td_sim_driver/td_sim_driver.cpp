@@ -185,7 +185,7 @@ namespace sq_plug
 			time_t t=time(nullptr);
 			strftime(time_info, sizeof(time_info), "%F_%H_%M_%S",localtime(&t));
 			
-			char name[64] = {0};
+			char name[128] = {0};
 			sprintf(name, "./%s_%s.csv", m_sim_log_name.c_str(),time_info);
 			sim_log.open(name, std::ios::out | std::ios::trunc);
 
@@ -292,6 +292,7 @@ namespace sq_plug
 		while (true)
 		{
 			sq_quot *quot = new sq_quot;
+			memset(quot,0,sizeof(sq_quot));
 			quot->tid = tid_market_data;
 			bool ret = quot_reader.read_line(*quot);
 			if (!ret)

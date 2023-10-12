@@ -1,10 +1,14 @@
 #include "sq_struct_des.h"
 #include "sq_struct_def.h"
 
-#define SQ_DES_DEFINE_BEGIN(class_name) class_name##_desc::class_name##_desc()
-#define SQ_DES_DEFINE_END(class_name)
+//这些代码是工具自动生成出来的
+
+/**
+ * @brief 定义描述类的各个结构体成员
+*/
 namespace sq
 {
+
     SQ_DES_DEFINE_BEGIN(sq_quot)
     {
         ADD_FD_UINT16(sq_quot, tid);
@@ -104,6 +108,4 @@ namespace sq
         ADD_FD_UINT8(sq_order_state_ntf, direction);
         ADD_FD_UINT8(sq_order_state_ntf, offset);
     }
-
-
 }

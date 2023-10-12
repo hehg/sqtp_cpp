@@ -36,7 +36,7 @@ void load_td_plugs(const char*cfg_path)
 		xml_attribute<> *att_enable = plug->first_attribute("enable");
 		xml_attribute<> *att_path = plug->first_attribute("path");
 		xml_attribute<> *att_name = plug->first_attribute("name");
-#if defined (MAC)
+#if defined (__APPLE__)
         std::string name="lib"+string(att_name->value())+".dylib";
 #elif defined(LINUX)
     std::string name="lib"+string(att_name->value())+".so";
@@ -92,7 +92,7 @@ void unload_td_plugs()
 		}
 		m_td_plugs.clear();
 }
-int place_order(int local_id, const char *market, const char *contract, int direction, int offset, double price,
+int sq_frame_place_order(int local_id, const char *market, const char *contract, int direction, int offset, double price,
                 int qty, int order_type, int product_type)
 {
     assert(market);
@@ -123,7 +123,7 @@ int place_order(int local_id, const char *market, const char *contract, int dire
     int ret = sq_mdb_put(tid_place_order, (char *)&req, sizeof(req));
     if (ret != ok)
     {
-        return ret;
+        return ret;     
     }
     // 发送给插件
     if (m_td_plugs.empty())
@@ -139,28 +139,28 @@ int place_order(int local_id, const char *market, const char *contract, int dire
 }
 
 
-int buy_open(int local_id, const char *contract, double price, int qty)
+int sq_frame_buy_open(int local_id, const char *contract, double price, int qty)
 {
-    return place_order(local_id, "", contract, f_buy, f_open, price, qty, 0, 0);
+    return sq_frame_place_order(local_id, "", contract, f_buy, f_open, price, qty, 0, 0);
 }
 
-int sell_open(int local_id, const char *contract, double price, int qty)
+int sq_frame_sell_open(int local_id, const char *contract, double price, int qty)
 {
-    return place_order(local_id, "", contract, f_sell, f_open, price, qty, 0, 0);
+    return sq_frame_place_order(local_id, "", contract, f_sell, f_open, price, qty, 0, 0);
 
 }
-int buy_close(int local_id, const char *contract, double price, int qty)
+int sq_frame_buy_close(int local_id, const char *contract, double price, int qty)
 {
-    return place_order(local_id, "", contract, f_buy, f_close, price, qty, 0, 0);
+    return sq_frame_place_order(local_id, "", contract, f_buy, f_close, price, qty, 0, 0);
 
 }
-int sell_close(int local_id, const char *contract, double price, int qty)
+int sq_frame_sell_close(int local_id, const char *contract, double price, int qty)
 {
-    return place_order(local_id, "", contract, f_sell, f_close, price, qty, 0, 0);
+    return sq_frame_place_order(local_id, "", contract, f_sell, f_close, price, qty, 0, 0);
 
 }
 
-int cancel_order(int local_id)
+int sq_frame_cancel_order(int local_id)
 {
     sq_order_record *order = sq_mdb_get_order_by_id(local_id);
     if (order)
@@ -178,7 +178,7 @@ int cancel_order(int local_id)
     }
     // req.contract
 }
-void cancel_all_order(int direction)
+void sq_frame_cancel_all_order(int direction)
 {
     if (m_order_table == nullptr)
     {

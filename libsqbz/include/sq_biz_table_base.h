@@ -8,11 +8,12 @@ namespace sq
     * key val的基类，其它好多表都是继承于此，提供了一些基础接口
     * 内部有一个map 来作为索引，一个vector 存放数据
    */
-   template <typename Key_t, typename Val_t>
+   template <typename Key_t, typename Val_t,typename Map = std::map<Key_t, Val_t*>>
+
    class sq_biz_table_base
    {
    public:
-      using IndexTable_t = std::map<Key_t, Val_t *>;
+      using IndexTable_t = Map;
       using Table_t=std::vector<Val_t*>;
       sq_biz_table_base()
       {
@@ -131,11 +132,6 @@ namespace sq
       Table_t      m_Table;
    };
 
-   template <typename Key_t, typename Val_t>
-   class sq_biz_unordered_table : public sq_biz_table_base<Key_t, Val_t>
-   {
-   public:
-      using IndexTable_t = std::unordered_map<Key_t, Val_t *>;
-   };
+   
 
 }

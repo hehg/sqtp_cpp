@@ -19,7 +19,7 @@ namespace sq
 		~sq_config();
 
 		bool open_file(const char *path);
-		void load_string(const char*val);
+		//void load_string(const char*val);
 		void parse(int argc, char*argv[]);
 
 		string 	get_string(const char*key,string default_val="");

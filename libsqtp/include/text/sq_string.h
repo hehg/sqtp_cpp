@@ -24,7 +24,17 @@ namespace sq{
 
 	void to_lower(string &src);
 	void to_upper(string &src);
+	//类型转换函数
+	template <typename T>
+	T sq_from_string(const std::string &str)
+	{
+		T result;
+		std::istringstream iss(str);
 
+		iss >> result;
+
+		return result;
+	}
 	int str_to_int(const string &s);
     string int_to_str(int val);
 

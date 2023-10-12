@@ -10,8 +10,8 @@ namespace sq
     {
 
     public:
-        sq_app(/* args */);
-        ~sq_app();
+        sq_app();
+        virtual ~sq_app();
 
         //获取app文件的路径
 		const char* get_app_path();
@@ -20,7 +20,13 @@ namespace sq
 
         //启动信号捕获
 		virtual void init(int argc, char **argv);
-        virtual void run(){};
+        virtual void run(){
+            while (true)
+            {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            
+        };
 
         //读取配置信息
 		std::string get_config_string(const char* key, const char* default_val="");

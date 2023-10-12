@@ -38,10 +38,7 @@ namespace sq
 		s_cur_app->on_close(signal_id);
 		exit(0);
 	}
-	void app_base_callbak(int tid, char *data, int size, void *param)
-	{
-		s_cur_app->on_frame_msg(tid,data,size);
-	}
+	
 	void sq_app_base::show_help()
 	{
 		printf("usage: ./app [-t trade_date] [-l log_level] [-c config path]\n");
@@ -53,8 +50,6 @@ namespace sq
 		m_trade_date = time.format("YYYYMMDD");
 		m_conf_path = "../conf/config.cfg";
 	}
-
-	
 
 	sq_app_base::~sq_app_base()
 	{
@@ -94,15 +89,15 @@ namespace sq
 		}
 		m_config.open_file(m_conf_path.c_str());
 		
-		m_app_id = get_config_int("app_id");
+		m_app_id = m_config.get_int("app_id");
 
 		//======初始化日志=============//
-		level_enum log_level = (level_enum)get_config_int("log_level", log_debug);
+		level_enum log_level = (level_enum)m_config.get_int("log_level", log_debug);
 		if (m_option.has_opt("-l"))
 		{
 			log_level = (level_enum)m_option.get_value_int("-l");
 		}
-		string log_name = get_config_string("log_name", "app");
+		string log_name = m_config.get_string("log_name", "app");
 
 		string log_path = "../log/" + log_name + "_" + m_trade_date + ".log";
 
@@ -128,44 +123,9 @@ namespace sq
 
 		//=====启动信号捕获=====
 		capture_signal();
-		//=====加载frame======
-		sq_frame_set_option("callback_param",this);
-    	sq_frame_set_option("callback_func",(void*)app_base_callbak);
- 		sq_frame_open();
 	}
 	
-	void sq_app_base::on_frame_msg(int tid,char*data,int size)
-	{
-		if (tid == tid_market_data)
-		{
-			sq_quot *quot = (sq_quot *)data;
-			on_market_data(quot);
-		}
-
-		else if (tid == tid_order_state)
-		{
-			sq_order_state_ntf *s = (sq_order_state_ntf *)data;
-			on_order_state(s->sq_local_id,
-						   s->contract.data(),
-						   s->status,
-						   s->direction,
-						   s->offset);
-		}
-		else if (tid == tid_order_match)
-		{
-			sq_order_match_ntf *s = (sq_order_match_ntf *)data;
-			// sq_order_record *order = sq_mdb_get_order_by_id(s->sq_local_id);
-			on_order_match(s->sq_local_id,
-						   s->contract.data(),
-						   s->match_price,
-						   s->match_qty,
-						   s->direction,
-						   s->offset);
-		}
-		else{
-			on_trade_msg(tid,data,size);
-		}
-	}
+	
 	void sq_app_base::run()
 	{
 		while (true)
@@ -174,30 +134,7 @@ namespace sq
 		}
 		
 	}
-	string sq_app_base::get_config_string(const char *key, const char* default_val)
-	{
-		return m_config.get_string(key,default_val);
-	}
-	int sq_app_base::get_config_int(const char *key, int default_val)
-	{
-		return m_config.get_int(key,default_val);
-	}
-	double sq_app_base::get_config_double(const char *key, double default_val)
-	{
-		return m_config.get_double(key,default_val);
-	}	
-	int sq_app_base::get_config_array(const char *key, vector<string> &values)
-	{
-		return m_config.get_string_array(key,values);
-	}
-	int sq_app_base::get_config_array_int(const char *key, vector<int> &values)
-	{
-		return m_config.get_int_array(key,values);
-	}
-	bool sq_app_base::get_config_bool(const char *key, bool default_val)
-	{
-		return m_config.get_bool(key,default_val);
-	}
+	
 	void sq_app_base::capture_signal()
 	{
 		
@@ -223,10 +160,5 @@ namespace sq
 	const char* sq_app_base::get_app_folder()
 	{
 		return m_app_dir.c_str();
-	}
-
-	void sq_app_base::on_trade_msg(int tid, char *data, int size)
-	{
-
 	}
 }

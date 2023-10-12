@@ -48,7 +48,7 @@ Copyright (c) 2003-2015
 #define SUPPORT_MYSQL_DB 0
 #define SUPPORT_MQ 0
 #define SUPPORT_OPENSSL 0
-#define SUPPORT_SQLITE  0
+
 //系统头文件
 #include <algorithm>
 #include <array>
@@ -119,7 +119,7 @@ using namespace std;
 #include <sys/select.h>
 #include <sys/time.h>
 #include <ftw.h>
-#elif defined(MAC)
+#elif defined(__APPLE__)
 #include <sys/syscall.h>
 #include <arpa/inet.h>
 #include <dirent.h>

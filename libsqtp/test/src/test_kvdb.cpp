@@ -1,4 +1,4 @@
-#include "unit_test.h"
+#include "sq_unit_test.h"
 #include "db/kv_db.h"
 using namespace sq;
 

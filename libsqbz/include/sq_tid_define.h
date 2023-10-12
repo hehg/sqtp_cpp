@@ -31,8 +31,8 @@ namespace sq
     const int tid_arbi_order_state = 18;	//套利单的状态
     const int tid_arbi_order_match = 19;	//套利单的成交
     const int tid_level3_quot = 20;     	//level3行情
-    const int tid_place_order_rsp = 21;  	//订单应答 代理服务器
-    const int tid_cancel_order_rsp = 22; 	//撤单应答 代理服务器
+   // const int tid_place_order_rsp = 21;  	//订单应答 代理服务器
+   // const int tid_cancel_order_rsp = 22; 	//撤单应答 代理服务器
     const int tid_modify_order = 23;     	//修改订单
     const int tid_order_modify_rsp = 24; 	///订单修改应答
 

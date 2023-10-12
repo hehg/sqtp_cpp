@@ -10,3 +10,6 @@ add_subdirectory(plug_td_sim_by_quot)
 #plubs of biz
 add_subdirectory(plug_bz_md_store)
 add_subdirectory(plug_bz_md_post)
+add_subdirectory(plug_bz_risk)
+
+add_subdirectory(plug_bz_stock_fe)

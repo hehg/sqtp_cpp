@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "text/sq_string.h"
+#include "log/sq_logger.h"
 namespace sq
 {
 	csv_file::csv_file() :
@@ -28,21 +29,23 @@ namespace sq
             fclose(m_file);
         m_file = nullptr;
     }
-	bool csv_file::read_line(char *buf, int buflen)
+	int csv_file::read_line(char *buf, int buflen)
 	{
+		int len=0;
 		if (m_file)
 		{
 			char* ret = fgets(buf, buflen, m_file);
 			if (ret == NULL)
-				return false;
-			int len = strlen(buf);
-			if (len > 0 && buf[len - 1] == '\n')
-				buf[len - 1] = '\0';
-			if (len > 1 && buf[len - 2] == '\r')
-				buf[len - 2] = '\0';
-			return true;
+				return 0;
+			len = strlen(buf);
+			if(len<buflen){
+				buf[len] = '\n';
+			}
+			else{
+				sq_panic("csv_file::read_line() read line too long");
+			}
 		}
-		return false;
+		return len+1;
 	}
 
 
@@ -70,32 +73,134 @@ namespace sq
 		write_line(strTmp.c_str());
 
 	}
-	bool csv_file::read(field_list_t&line)
+	bool csv_file::read(field_list_t &line)
 	{
+		enum
+		{
+			STATE_START,
+			STATE_QUOTE, // 引号
+			STATE_FIELD,
+			STATE_QUOTE_QUOTE,
+			STATE_QUOTE_COMMA,
+			STATE_QUOTE_COMMA_QUOTE,
+			STATE_COMMA, // 逗号
+			STATE_COMMA_QUOTE,
+			STATE_COMMA_COMMA,
+			STATE_COMMA_COMMA_QUOTE,
+		};
 		line.clear();
 
-		bool ret = read_line(m_read_buf, sizeof(m_read_buf));
-		if (ret)
+		int size = read_line(m_read_buf, sizeof(m_read_buf));
+		if (size)
 		{
-			int count=sq_split(m_read_buf, line);
-			for (int i = 0; i < count; i++)
+			//按 csv 解析这行数据
+			char *p = m_read_buf;
+			int state = STATE_START;
+			string one;
+			for (int i = 0; i < size; i++)
 			{
-				string tmp = line[i];
-				int len = tmp.size();
-				if (len > 1)
+				char c = *(m_read_buf + i);
+				//行首
+				if (state == STATE_START)
 				{
-					if (tmp[0] == '"' && *(tmp.rbegin()) == '"')
+					if(c=='\r'||c=='\n'){
+						break;
+					}
+					
+					else if (c == ',')
 					{
-						line[i]=tmp.substr(1,len-2);
+						state = STATE_FIELD;
+						line.push_back(one);
+						//std::cout << one << "\n";
+						one = "";
+					}
+					else if(c=='"'){
+						state = STATE_QUOTE;
+					}
+					else {
+						state = STATE_FIELD;
+						one += c;
+					}
+					
+				}
+				else if(state==STATE_FIELD)
+				{
+				    if (c == ',')
+					{
+						state = STATE_COMMA;
+						line.push_back(one);
+						//std::cout << one << "\n";
+						one = "";
+					}
+					else if(c=='\r'||c=='\n'){
+						line.push_back(one);
+						//std::cout <<"endline,"<< one << "\n";
+						one = "";
+						break;
+					}
+					else if(c=='"'){
+						state = STATE_QUOTE;
+					}
+					else {
+						one += c;
+					}
+				}
+				else if(state==STATE_COMMA)
+				{
+					if (c == ',')
+					{
+						state = STATE_COMMA;
+						line.push_back(one);
+						//std::cout << one << "\n";
+						one = "";
+					}
+					else if(c=='"'){
+						state = STATE_QUOTE;
+					}
+					else if(c=='\r'||c=='\n'){
+						line.push_back(one);
+						//std::cout<<"endline," << one << "\n";
+						one = "";
+						break;
+					}
+					else{
+						one += c;
+						state = STATE_FIELD;
+					}
+				}
+				else if(state==STATE_QUOTE)
+				{
+					if (c == '"')
+					{
+						state = STATE_QUOTE_QUOTE;
+						line.push_back(one);
+						//std::cout << one << "\n";
+						one = "";
+					}
+					else{
+						one += c;
+					}
+				}
+				else if(state==STATE_QUOTE_QUOTE)
+				{
+					if (c== ','){
+						state = STATE_FIELD;
+						one = "";
+					}
+					else if(c=='\r'||c=='\n')
+					{
+						break;
 					}
 				}
 			}
-			return count>0;
-		}
 
-		return false;
+		}
+		else{
+			return false;
+		}
+		return true;
 	}
-    int32_t csv_file::read_all_line(line_list_t&lists)
+	int32_t csv_file::read_all_line(line_list_t&lists)
     {
         if (m_file)
         {
@@ -129,11 +234,14 @@ namespace sq
 	{
 		m_name_index.clear();
 		read(m_head_list);
+		//printf("title=%s");
 		for (size_t i = 0; i < m_head_list.size(); i++)
 		{
 			string name=sq_string_trim(m_head_list[i]);
+			//printf("%s,",name.c_str());
 			m_name_index[name] = i;
 		}
+		//printf("\n");
 	}
 	void csv_file_reader::set_header(vector<string> heads)
 	{

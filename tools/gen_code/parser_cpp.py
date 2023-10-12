@@ -1,16 +1,20 @@
 import CppHeaderParser as parser
 import sys
 import os
+'''对c语言格式的头文件中的数据结构进行解析，并生成相关的
+描述信息（元信息），供项目使用
+'''
 file_path = sys.argv[1]
 cpp = parser.CppHeader(file_path)
 
 quot = cpp.classes['sq_quot']
-#print(quot)
+print(quot)
 print(quot['name'])
 class_name = quot['name']
+#遍历所有public的属性
 for a in quot['properties']['public']:
-     f_type = a['type']
-     f_name = a['name']
+     f_type = a['type'] #成员类型
+     f_name = a['name'] #成员名称
      func_name = ""
      #print(a)
      #print(f_name,f_type)
@@ -55,9 +59,3 @@ for a in quot['properties']['public']:
                continue
           s=f"{func_name}({class_name},{f_name});"
           print(s)
-# for c in cpp.classes.keys():
-#     my=cpp.classes[c]
-#     print(my.name)
-#     print(my)
-    # for a in my['properties']['public']:
-    #     print(a['type'],a['name'])

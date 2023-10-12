@@ -17,6 +17,10 @@ namespace sq {
         log_info=4,
         log_debug=5,
     } level_enum;
+    //字体颜色
+#define PRINT_COLOR_NONE        "\033[0m"
+#define PRINT_COLOR_GREEN       "\033[0;32m"
+#define PRINT_COLOR_RED         "\033[0;31m"
 
     static const char* level_names[]{ "","fata", "error", "warn",  "info", "debug" };
 

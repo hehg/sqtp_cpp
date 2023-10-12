@@ -20,6 +20,8 @@ namespace sq
 	const int32_t err_invalid_package=7;
     const int32_t err_invalid_param=8;
     const int32_t err_again=9;
+    const int32_t err_sql_exec=10;
+    const int32_t err_db_connect=11;
 
     //offer
     const int32_t err_no_exit_order = 301;

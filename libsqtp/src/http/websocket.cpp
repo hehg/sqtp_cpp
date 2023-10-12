@@ -11,7 +11,9 @@ namespace sq
 // #define htobe64(v) htonll(v)
 // #define be16toh(v) ntohs(v)
 // #define be64toh(v) ntohll(v)
+#ifndef __linux__
 #define be32toh(v) ntohl(v)
+#endif 
     // #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
     inline void hex_print(const char *data, int size)

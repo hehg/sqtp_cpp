@@ -1,10 +1,10 @@
 #pragma once
 
 #include "pack/struct_reflect.h"
-
-#define SQ_DES_DECLARE(class_name) class class_name##_desc:public struct_reflect {public:class_name##_desc();};
+//构造一个描述类
 namespace sq
 {
+    
     SQ_DES_DECLARE(sq_quot)
     SQ_DES_DECLARE(sq_req_order)
     SQ_DES_DECLARE(sq_order_record)

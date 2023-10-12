@@ -13,7 +13,7 @@ namespace sq
 	{
 		#if  defined(WINDOWS)
 			return ::_aligned_malloc(size, align);
-		#elif defined(Cygwin)|| defined(MAC)
+		#elif defined(Cygwin)|| defined(__APPLE__)
 			return malloc(size);
 		#else
 		   void * pMem;
@@ -30,7 +30,7 @@ namespace sq
 	{
 	  #if  defined(WINDOWS)
 			::_aligned_free(mem);
-		#elif defined(Cygwin)|| defined(MAC)
+		#elif defined(Cygwin)|| defined(__APPLE__)
 			::free(mem);
 		#else
 		  	::free(mem);

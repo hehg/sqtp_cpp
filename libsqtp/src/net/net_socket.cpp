@@ -294,7 +294,7 @@ namespace sq
 			c = 0;
 		return setsockopt(socket, IPPROTO_IP, IP_MULTICAST_LOOP, (char *)&c, sizeof(c));
 	}
-#if (defined WINDOWS || defined MAC)
+#if (defined WINDOWS || defined __APPLE__)
 	int32_t recvmsg(fd_t socket, struct msghdr *msg, unsigned int flags)
 	{
 		int32_t recv_len = 0;
@@ -353,7 +353,7 @@ namespace sq
 		return send_len;
 	}
 #endif
-#if (defined WINDOWS || defined MAC)
+#if (defined WINDOWS || defined __APPLE__)
 	int sendmmsg(fd_t s, struct mmsghdr *msgvec, unsigned int vlen, unsigned int flags)
 	{
 		int count = 0;
@@ -562,7 +562,7 @@ namespace sq
 		{
 			struct in_addr objAddr;
 			objAddr.s_addr = inet_addr(szLocalIP);
-#if (defined WINDOWS || defined MAC)
+#if (defined WINDOWS || defined __APPLE__)
 			return setsockopt(m_socket_fd, IPPROTO_IP, IP_MULTICAST_IF, (char *)&objAddr, sizeof(in_addr));
 #else
 			return setsockopt(m_socket_fd, SOL_IP, IP_MULTICAST_IF, &objAddr, sizeof(in_addr));

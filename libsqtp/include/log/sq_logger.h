@@ -36,101 +36,90 @@ namespace sq
         sq_spin_lock m_lock;
     };
 
-    
     extern logger s_log;
 
-#define log_info(...)                                                         \
-    {                                                                         \
-        if (log_info <= s_log.m_level)                                        \
-        {                                                                     \
-            std::string __s = fmt::format(__VA_ARGS__);                         \
+#define log_info(...)                                             \
+    {                                                             \
+        if (log_info <= s_log.m_level)                            \
+        {                                                         \
+            std::string __s = fmt::format(__VA_ARGS__);           \
             s_log.log(log_info, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                     \
+        }                                                         \
     }
 
-#define log_warn(...)                                                         \
-    {                                                                         \
-        if (log_warn <= s_log.m_level)                                        \
-        {                                                                     \
-            std::string __s = fmt::format(__VA_ARGS__);                         \
+#define log_warn(...)                                             \
+    {                                                             \
+        if (log_warn <= s_log.m_level)                            \
+        {                                                         \
+            std::string __s = fmt::format(__VA_ARGS__);           \
             s_log.log(log_warn, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                     \
+        }                                                         \
     }
 
-#define log_debug(...)                                                         \
-    {                                                                          \
-        if (log_debug <= s_log.m_level)                                        \
-        {                                                                      \
-            std::string __s = fmt::format(__VA_ARGS__);                          \
+#define log_debug(...)                                             \
+    {                                                              \
+        if (log_debug <= s_log.m_level)                            \
+        {                                                          \
+            std::string __s = fmt::format(__VA_ARGS__);            \
             s_log.log(log_debug, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                      \
+        }                                                          \
     }
 
-#define log_error(...)                                                       \
-    {                                                                        \
-        if (log_err <= s_log.m_level)                                        \
-        {                                                                    \
-            std::string __s = fmt::format(__VA_ARGS__);                        \
-            s_log.log(log_err, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                    \
+#define log_error(...)                                                \
+    {                                                                 \
+        fprintf(stdout, PRINT_COLOR_RED);                             \
+        std::string __s = fmt::format(__VA_ARGS__);                   \
+        s_log.log(log_err, __FILE__, __LINE__, __s.c_str());          \
+        fprintf(stderr, "%s:%d|%s", __FILE__, __LINE__, __s.c_str()); \
+        fprintf(stdout, PRINT_COLOR_NONE);                            \
     }
 
-#define log_fata(...)                                                       \
-    {                                                                        \
-        if (log_fata <= s_log.m_level)                                        \
-        {                                                                    \
-            std::string __s = fmt::format(__VA_ARGS__);                        \
-            s_log.log(log_err, __FILE__, __LINE__, __s.c_str());            \
-            std::cout<<__s<<std::endl;      \
-            s_log.flush();  assert(false);                                    \
-        }                                                                    \
+#define log_fata(...)                                        \
+    {                                                        \
+        std::string __s = fmt::format(__VA_ARGS__);          \
+        s_log.log(log_err, __FILE__, __LINE__, __s.c_str()); \
+        std::cout << __s << std::endl;                       \
+        s_log.flush();                                       \
+        assert(false);                                       \
     }
 //============指定日志对象==============
-#define m_log_info(mlog,...)                                                         \
-    {                                                                         \
-        if (log_info <= log.m_level)                                        \
-        {                                                                     \
-            std::string __s = fmt::format(__VA_ARGS__);                         \
+#define m_log_info(mlog, ...)                                    \
+    {                                                            \
+        if (log_info <= log.m_level)                             \
+        {                                                        \
+            std::string __s = fmt::format(__VA_ARGS__);          \
             mlog.log(log_info, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                     \
+        }                                                        \
     }
-#define m_log_debug(mlog,...)                                                         \
-    {                                                                         \
-        if (log_debug <= log.m_level)                                        \
-        {                                                                     \
-            std::string __s = fmt::format(__VA_ARGS__);                         \
+#define m_log_debug(mlog, ...)                                    \
+    {                                                             \
+        if (log_debug <= log.m_level)                             \
+        {                                                         \
+            std::string __s = fmt::format(__VA_ARGS__);           \
             mlog.log(log_debug, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                     \
+        }                                                         \
     }
-#define m_log_error(mlog,...)                                                         \
-    {                                                                         \
-        if (log_error <= log.m_level)                                        \
-        {                                                                     \
-            std::string __s = fmt::format(__VA_ARGS__);                         \
+#define m_log_error(mlog, ...)                                    \
+    {                                                             \
+        if (log_error <= log.m_level)                             \
+        {                                                         \
+            std::string __s = fmt::format(__VA_ARGS__);           \
             mlog.log(log_error, __FILE__, __LINE__, __s.c_str()); \
-        }                                                                     \
+        }                                                         \
     }
-#define m_log_fata(mlog,...)                                                         \
-    {                                                                         \
-        if (log_fata <= log.m_level)                                        \
-        {                                                                     \
-            std::string __s = fmt::format(__VA_ARGS__);                         \
-            mlog.log(log_fata, __FILE__, __LINE__, __s.c_str());            \
-            std::cerr<<__s<<std::endl;                                      \
-            assert(false);                                                  \
-        }                                                                     \
+#define m_log_fata(mlog, ...)                                    \
+    {                                                            \
+        if (log_fata <= log.m_level)                             \
+        {                                                        \
+            std::string __s = fmt::format(__VA_ARGS__);          \
+            mlog.log(log_fata, __FILE__, __LINE__, __s.c_str()); \
+            std::cerr << __s << std::endl;                       \
+            assert(false);                                       \
+        }                                                        \
     }
-                                                          \
 
-//========不建议使用的日志函数=======================
-#define SQ_LOG(level, msg)                                           \
-    do                                                               \
-    {                                                                \
-        if (level <= s_log.m_level)                                  \
-        {                                                            \
-            s_log.log(level, __FILE__, __LINE__, msg); \
-        }                                                            \
-    } while (0)
+    //========不建议使用的日志函数=======================
+
 
 #define SQ_LOG_LEVEL(l)     \
     do                      \
@@ -138,15 +127,14 @@ namespace sq
         s_log.set_level(l); \
     } while (0)
 
-#define SQ_LOGV(level, ...)                                            \
-    do                                                                 \
-    {                                                                  \
-        if (level <= s_log.m_level)                                    \
-        {                                                              \
-            char _buf_[1024];                                          \
-            snprintf(_buf_, sizeof(_buf_), __VA_ARGS__);               \
-            s_log.log(level, __FILE__, __LINE__, _buf_); \
-        }                                                              \
+#define sq_panic(...)                                   \
+    do                                                   \
+    {                                                    \
+        fprintf(stdout, PRINT_COLOR_RED);                \
+        char _buf_[1024];                                \
+        snprintf(_buf_, sizeof(_buf_), __VA_ARGS__);     \
+            std::cerr<< __FILE__<<":"<<__LINE__<<"|"<<_buf_; \
+        fprintf(stdout, PRINT_COLOR_NONE);               \
     } while (0)
 
 #define SQ_LOG_FLUSH() \

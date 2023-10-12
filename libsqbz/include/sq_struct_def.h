@@ -1,16 +1,15 @@
 #pragma once
 #include "sq_type_define.h"
 #include "sq_tid_define.h"
+#include "pack/struct_reflect.h"
+#include "sq_struct_des.h"
 /**
  * 结构体定义
 */
 namespace sq
 {
 	#pragma pack(push,1)
-	struct sq_hdr
-	{
-		uint16_t size;
-	};
+	
 	//合约信息
 	struct sq_contract
 	{
@@ -36,24 +35,24 @@ namespace sq
 	//行情信息
     struct sq_quot
 	{
-		tid_t    tid;
-		uint32_t pkg_no = 0;					  // 报文序号
-		product_type_t type = f_none; // 交易类型
+		tid_t    		tid;
+		uint32_t 		pkg_no = 0;					// 报文序号
+		product_type_t 	type = f_none; 				// 交易类型
 
-		market_id_t market;						  // 市场
-		variety_t variety;						  // 品种类型
-		uint32_t contract_idx = 0;				  // 合约编号
-		contract_t contract;					  // 合约
+		market_id_t 	market;						// 市场
+		variety_t 		variety;				    // 品种类型
+		uint32_t 		contract_idx = 0;		    // 合约编号
+		contract_t 		contract;					// 合约
 		
 		price_t price;	  // 最新价格
-		qty_t match_qty;  // 成交量
+		qty_t 	match_qty;  // 成交量
 		price_t turnover; // 成交额
-		double interest;  // 持仓
+		double 	interest;  // 持仓
 
 		price_t mbl_buy_price[5];
-		qty_t mbl_buy_qty[5];
+		qty_t 	mbl_buy_qty[5];
 		price_t mbl_sell_price[5];
-		qty_t mbl_sell_qty[5];
+		qty_t 	mbl_sell_qty[5];
 
 		price_t open;  // 开盘价
 		price_t close; // 收盘价
@@ -63,7 +62,7 @@ namespace sq
 		price_t limit_down; // 涨板
 
 		price_t pre_close; // 昨收盘
-		int multi;		   // 价格乘数因子
+		int 	multi;		   // 价格乘数因子
 
 		// 最优行情
 		inline price_t bid_price() { return mbl_buy_price[0]; };
@@ -77,8 +76,7 @@ namespace sq
 		trade_date_t date;						  // 日期:yyyymmdd
 		trade_time_t time;						  // 时间戳hh:mm:ss.sss
 
-		void to_string(std::ostream&of);
-		void to_json(std::ostream&of);
+		SQ_DEF_DES_VAR(sq_quot);
 	};
 	//订单信息
 	struct sq_order_record
@@ -110,7 +108,7 @@ namespace sq
 		trade_time_t	quot_time;		// 交易所 时间 hh:mm:ss.sss
 
         bool change_status(order_status_t state);
-        void to_string(std::ostream&of);
+        SQ_DEF_DES_VAR(sq_order_record);
 	};
 
 	const char *get_state_name(short s);
@@ -130,7 +128,7 @@ namespace sq
 		order_type_t type;		 /// 订单类型
 		product_type_t product_type; /// 产品类型
 
-		void to_string(std::ostream&of);
+		SQ_DEF_DES_VAR(sq_req_order);
 	};
 	//撤单请求
 	struct sq_req_cancel_order
@@ -140,20 +138,21 @@ namespace sq
         market_id_t		market;				///市场编号
 		contract_t 		contract;			///合约
 	};
-	//订单状态变化通知
+	//订单状态变化通知,这个信息由插件产生
 	struct sq_order_state_ntf
 	{
-		user_id_t user_id;
-		order_id_t sq_local_id;
-		contract_t contract;	 /// 合约
+		user_id_t 		user_id;		//user
+		order_id_t 		sq_local_id;	//订单本地编号
+		contract_t 		contract;	 	//合约
 		order_status_t  status;  		//订单状态
 		sys_order_id_t  sys_id ;        //交易所编号
 		qty_t    		cancel_qty;		///撤单数量
-		bs_flag_t   direction;
-		offset_t    offset;
-		void to_json(std::ostream&of);
+		bs_flag_t   	direction;      //买卖方向
+		offset_t    	offset;         //开平方式
+		int    			err_code;       //错误码,下单/撤单 失败时的错误编号
+		SQ_DEF_DES_VAR(sq_order_state_ntf);
 	};
-	//成交通知
+	//成交通知,这个信息由插件产生
 	struct sq_order_match_ntf
 	{
 		user_id_t   user_id;
@@ -167,8 +166,7 @@ namespace sq
 		offset_t    offset;
 		trade_date_t  date;//成交日期
 		trade_time_t  time;//成交时间
-		void to_string(std::ostream&of);
-		void to_json(std::ostream&of);
+		SQ_DEF_DES_VAR(sq_order_match_ntf);
 	};
 	//股票逐笔成交行情
 	struct stock_match_quot {

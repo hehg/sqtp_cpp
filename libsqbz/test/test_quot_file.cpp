@@ -1,7 +1,7 @@
 #include "sq_struct_def.h"
 #include "sq_quot_file.h"
 #include "sq_tid_define.h"
-#include "unit_test.h"
+#include "sq_unit_test.h"
 using namespace sq;
 
 SQ_TEST(test_quot_file_write)

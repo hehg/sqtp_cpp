@@ -40,6 +40,9 @@ T from_string(const string& s) {
 
         std::vector<int> get_cfg_arrary_int(std::string key, char split = ',');
 
+        /**
+         * 获取配置信息，返回 set
+        */
         template <typename T>
         std::set<T> get_cfg_set(std::string key, char split = ',')
         {
@@ -63,10 +66,10 @@ T from_string(const string& s) {
         int set_option(const char *key, void *val);
 
         // 基础成员
-        int m_id = 0;
-        std::string m_name;
-        std::unordered_map<std::string, std::string> m_options;
-        plug_callback_func_t m_call_back = nullptr;
-        void *m_call_back_param = nullptr;
+        int                     m_id = 0;
+        std::string             m_name;
+        std::unordered_map<std::string, std::string> m_options; //配置项
+        plug_callback_func_t    m_call_back         = nullptr;  //回调函数
+        void *                  m_call_back_param   = nullptr;  //回调函数的参数
     };
 }

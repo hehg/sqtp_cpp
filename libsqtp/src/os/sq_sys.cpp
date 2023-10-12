@@ -15,16 +15,16 @@ namespace sq
 	{
 #ifdef WINDOWS
 		 return ::GetCurrentThreadId();
-#elif defined(Cygwin)
-		 return 0; 
+#elif defined(LINUX)
+		return ::syscall(SYS_gettid);
 #else
-		 return ::syscall(SYS_gettid);
+		 return 0;
 #endif
 	}
 
 	 void bind_proc_to_cpu(int cpu_index)
 	 {
-#if defined(WINDOWS)||defined(Cygwin)||defined(MAC)
+#if defined(WINDOWS)||defined(Cygwin)||defined(__APPLE__)
 #else
 		 cpu_set_t mask;
 		 CPU_ZERO(&mask);
@@ -37,7 +37,7 @@ namespace sq
 
 	 void bind_thread_to_cpu(int cpu_index)
 	 {
-#if defined(WINDOWS)||defined(Cygwin)||defined(MAC)
+#if defined(WINDOWS)||defined(Cygwin)||defined(__APPLE__)
 #else
 		 cpu_set_t mask;
 		 CPU_ZERO(&mask);
@@ -54,7 +54,7 @@ namespace sq
 	 void bind_thread_to_cpu(thread &th, int cpu_index)
 	 {
 
-#if defined(WINDOWS) || defined(Cygwin) || defined(MAC)
+#if defined(WINDOWS) || defined(Cygwin) || defined(__APPLE__)
 #else
 		 cpu_set_t mask;
 		 CPU_ZERO(&mask);

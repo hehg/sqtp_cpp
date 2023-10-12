@@ -1,6 +1,8 @@
 #ifndef sq_frame_h
 #define sq_frame_h
-
+/**
+ * 对交易系统的业务封装
+*/
 #ifdef WINDOWS
 	#ifdef USE_SQ_DLL_EXPORT
 	#define SQ_DLL_EXPORT __declspec(dllexport)
@@ -17,6 +19,7 @@
  * 	1. 基于xml 配置文件加载插件
  *  2. 提供与交易平台，行情平台的 函数接口
  *  3. 内存中维护交易相关的各种数据
+ *  4. 整个框架非线程安全
 */
 
 extern "C" {
@@ -26,7 +29,7 @@ extern "C" {
 
 	
 	//=====框架类接口=========
-	SQ_DLL_EXPORT int sq_frame_open();
+	SQ_DLL_EXPORT int sq_frame_open(const char*cfg_path=nullptr);
 	SQ_DLL_EXPORT void sq_frame_close();
 	/** 设置参数
 	 * @param key 参数的名称
@@ -40,12 +43,21 @@ extern "C" {
     //=====行情相关接口=========
 	//订阅行情
 	//=====交易相关接口=========
-	SQ_DLL_EXPORT int buy_open(int local_id,const char*contract,double price,int qty);
-	SQ_DLL_EXPORT int sell_open(int local_id,const char*contract,double price,int qty);
-	SQ_DLL_EXPORT int buy_close(int local_id,const char*contract,double price,int qty);
-	SQ_DLL_EXPORT int sell_close(int local_id,const char*contract,double price,int qty);
 
-	SQ_DLL_EXPORT int place_order(int local_id,
+	/**
+	 * @brief 买开
+	 * @param local_id 本地订单编号，不能重复
+	 * @param contract 合约编号
+	 * @param price    订单价格
+	 * @param qty 	   订单数量
+	 * @return 0 成功  否则 失败
+	*/
+	SQ_DLL_EXPORT int sq_frame_buy_open(int local_id,const char*contract,double price,int qty);
+	SQ_DLL_EXPORT int sq_frame_sell_open(int local_id,const char*contract,double price,int qty);
+	SQ_DLL_EXPORT int sq_frame_buy_close(int local_id,const char*contract,double price,int qty);
+	SQ_DLL_EXPORT int sq_frame_sell_close(int local_id,const char*contract,double price,int qty);
+
+	SQ_DLL_EXPORT int sq_frame_place_order(int local_id,
 								  const char *market,
 								  const char *contract,
 								  int direction, int offset,
@@ -53,9 +65,9 @@ extern "C" {
 								  int qty,
 								  int order_type, int product_type);
 
-	SQ_DLL_EXPORT int cancel_order(int local_id);
+	SQ_DLL_EXPORT int sq_frame_cancel_order(int local_id);
  	//撤销某个方向的所有订单
-    SQ_DLL_EXPORT void cancel_all_order(int direction);
+    SQ_DLL_EXPORT void sq_frame_cancel_all_order(int direction);
 
 	//=====其它接口===============
 	SQ_DLL_EXPORT const char* sq_frame_get_error_msg(int err_no);

@@ -52,7 +52,7 @@ inline void safe_strcpy(char*des, size_t des_len, const char*src)
 #define GET_LAST_SOCK_ERROR() WSAGetLastError()
 #endif
 
-#if defined(MAC)
+#if defined(__APPLE__)
 #define GET_LAST_SOCK_ERROR() errno
 #endif
 

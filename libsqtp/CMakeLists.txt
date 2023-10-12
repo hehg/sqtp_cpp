@@ -1,9 +1,9 @@
 #cmake_minimum_required (VERSION 2.8)
 
 set (app_name "sqtp")
-#project (${app_name} CXX)
 
 include (../head.cmake)
+
 
 include_directories(./include)
 
@@ -16,6 +16,17 @@ else()
 	aux_source_directory(./src/container SRC_FILES)
 	aux_source_directory(./src/crypto SRC_FILES)
 	aux_source_directory(./src/db SRC_FILES)
+	aux_source_directory(./src/db/db_adapter SRC_FILES)
+
+	aux_source_directory(./src/db/db_adapter/mysql SRC_FILES)
+
+	if(SUPPORT_DB_SQLITE)
+		aux_source_directory(./src/db/db_adapter/sqlite SRC_FILES)
+	endif()
+	
+	aux_source_directory(./src/db/db_adapter/mongodb SRC_FILES)
+	aux_source_directory(./src/db/db_adapter/redis SRC_FILES)
+
 	aux_source_directory(./src/http SRC_FILES)
 	aux_source_directory(./src/log SRC_FILES)
 	aux_source_directory(./src/math SRC_FILES)
@@ -29,6 +40,7 @@ else()
 	aux_source_directory(./src/time SRC_FILES)
 	aux_source_directory(./src/plug SRC_FILES)
 	aux_source_directory(./src/error SRC_FILES)
+	aux_source_directory(./src/cmd_line SRC_FILES)
 
     set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/)
 endif(CMAKE_SYSTEM_NAME MATCHES "Windows")

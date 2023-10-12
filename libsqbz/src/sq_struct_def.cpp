@@ -1,29 +1,10 @@
 #include "sq_struct_def.h"
 #include "sq_struct_des.h"
 
-#define SQ_DEF_DES_VAR(class_name) static class_name##_desc s_##class_name##_desc 
 
 namespace sq
 {
-	SQ_DEF_DES_VAR(sq_quot);
-	SQ_DEF_DES_VAR(sq_req_order);
-	SQ_DEF_DES_VAR(sq_order_record);
-	SQ_DEF_DES_VAR(sq_order_match_ntf);
-	SQ_DEF_DES_VAR(sq_order_state_ntf);
-
-
-    void sq_quot::to_string(std::ostream&of)
-    {
-        s_sq_quot_desc.to_string(this,of);
-    }
-    void sq_quot::to_json(std::ostream&of)
-    {
-        s_sq_quot_desc.to_json(this,of);
-    }
-	void sq_req_order::to_string(std::ostream&of)
-    {
-        s_sq_req_order_desc.to_string(this,of);
-    }
+	
     bool sq_order_record::change_status(order_status_t state)
 	{
 		if (is_finish)
@@ -49,22 +30,6 @@ namespace sq
 		return false;
 	}
 
-	void sq_order_record::to_string(std::ostream&of)
-    {
-        s_sq_order_record_desc.to_string(this,of);
-    }
-	void sq_order_match_ntf::to_string(std::ostream&of)
-    {
-        s_sq_order_match_ntf_desc.to_string(this,of);
-    }
-    void sq_order_match_ntf::to_json(std::ostream&of)
-    {
-        s_sq_order_match_ntf_desc.to_json(this,of);
-    }
-    void sq_order_state_ntf::to_json(std::ostream&of)
-    {
-        s_sq_order_state_ntf_desc.to_json(this,of);
-    }
 	const char* get_state_name(short s)
    {
        static const char* state_name[]={
