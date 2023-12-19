@@ -1,0 +1,45 @@
+<project>
+
+<app>
+ <log_level>debug</log_level>
+ <log_name>out</log_name>
+</app>
+
+<plug_md des="行情插件">
+    <plug enable="false" des="行情播放插件" path="../../lib/plug/libplug_md_replay.dylib">
+        <name>replay</name>
+        <log_level>debug</log_level>
+   </plug>
+
+  
+</plug_md>
+
+<plug_bz des="业务插件">
+
+</plug_bz>
+
+<plug_td des="交易插件">
+	 <plug_dir>../../lib/plug</plug_dir>
+     <plug enable="true" des="模拟撮合-推导" name="plug_td_sim_driver"> 
+        <name>plug_sim_driver</name>
+        <log_level>debug</log_level>
+        <tick>1</tick>
+        <unit>10</unit>
+        <beforeme_type>1</beforeme_type>
+        <beforeme_fix>1</beforeme_fix>
+        <beforeme_rate>0.5</beforeme_rate>
+        <cancel_match_rate>0.5</cancel_match_rate>
+        <all_match_type>0</all_match_type>
+        <enable_best_match>true</enable_best_match>
+        <support_sim_log>false</support_sim_log>
+        <delay_for_one_quot>1</delay_for_one_quot>
+        <match_price_triger_type>handup</match_price_triger_type>
+        <quot_file-win>E:/BaiduNetdiskDownload/a2305.csv</quot_file-win>
+        <quot_file>/Users/hehong/Downloads/test_data/a2305.csv</quot_file>
+        <support_contract>a2305</support_contract>
+        <quot_file_header>variety,contract,time,price,match_qty,turnover,interest,BP5,BV5,BP4,BV4,BP3,BV3,BP2,BV2,BP1,BV1,SP1,SV1,SP2,SV2,SP3,SV3,SP4,SV4,SP5,SV5</quot_file_header>
+        <quot_file_have_header>false</quot_file_have_header>
+   </plug>
+</plug_td>
+
+</project>

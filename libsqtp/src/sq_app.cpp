@@ -37,14 +37,13 @@ namespace sq
 		
 		string log_name = get_config_string("log_name", "app");
 
-		string log_path = "../log/" + log_name + "_" + m_today + ".log";
-
 		if (log_name == "stdout")
 		{
 			s_log.add_stdout_target();
 		}
 		else
 		{
+			string log_path = "../log/" + log_name + "_" + m_today + ".log";
 			s_log.add_file_target(log_path.c_str());
 		}
 

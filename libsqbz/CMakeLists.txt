@@ -11,6 +11,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/lib/)
 else()
 	aux_source_directory(./src SRC_FILES)
+	aux_source_directory(./src/match SRC_FILES)
     set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib/)
 endif(CMAKE_SYSTEM_NAME MATCHES "Windows")
 

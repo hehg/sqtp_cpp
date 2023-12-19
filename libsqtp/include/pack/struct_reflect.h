@@ -165,6 +165,8 @@ namespace sq
         void to_csv(void *obj, std::ostream &out = std::cout);
         void to_json(void*obj,std::ostream &out=std::cout);
 
+        void from_string(void *obj, const char*str);
+
         std::tuple<field_type_t,char*>  get_field_val(void*obj,int index);
 
     };
@@ -172,21 +174,27 @@ namespace sq
 }
 
 
-
 #define SQ_DES_DECLARE(class_name) class class_name##_desc:public struct_reflect {public:class_name##_desc();};
 
 #define SQ_DES_DEFINE_BEGIN(class_name)  class_name##_desc class_name::s_##class_name##_desc; \
     class_name##_desc::class_name##_desc()
 
-//#define SQ_DES_DEFINE_END(class_name)
-#define SQ_DEF_DES_VAR(class_name) static class_name##_desc s_##class_name##_desc; \
+
+#define SQ_DEF_DES_VAR(class_name) \
     void to_string(std::ostream&of){\
+        static class_name##_desc s_##class_name##_desc; \
         s_##class_name##_desc.to_string(this,of);\
     }\
     void  to_csv(std::ostream&of){\
+        static class_name##_desc s_##class_name##_desc; \
         s_##class_name##_desc.to_csv(this,of);\
     }\
     void to_json(std::ostream&of){\
+        static class_name##_desc s_##class_name##_desc; \
         s_##class_name##_desc.to_json(this,of);\
+    }\
+    void from_string(const char*str){\
+        static class_name##_desc s_##class_name##_desc; \
+        s_##class_name##_desc.from_string(this,str);\
     }
     

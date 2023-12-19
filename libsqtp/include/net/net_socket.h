@@ -38,10 +38,11 @@ struct mmsghdr
 #endif
 namespace sq
 {
+	//创建 socket
 	fd_t open_socket(int domain_, int type_, int protocol_);
 	inline fd_t open_tcp_socket() { return open_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); }
 	inline fd_t open_udp_socket() { return open_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); }
-
+    //关闭 socket
 	void close_socket(fd_t);
 	
 	int close_wait_ms(int fd_, unsigned int max_ms_ = 2000);
@@ -113,15 +114,12 @@ namespace sq
 		 */
 		void open(const char *url, bool is_sender,const char* local_ip=nullptr);
 
-		/// 设置socket为非阻塞方式
-		int32_t set_unblock();
+		
 
 		/// 接收数据
 		int32_t recv_from(char *buf, int32_t buf_len);
 
-		void set_send_buf_size(int size);
-		void set_recv_buf_size(int size);
-
+		
 		/// 发送数据包到已经设置好的对端地址和端口
 		int32_t send_to_dest(const char *buf, int32_t buf_len) const;
 

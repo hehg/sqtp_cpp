@@ -23,6 +23,7 @@ namespace sq
         uint8_t payloadlen : 7;
         // 是否加密
         uint8_t masked : 1;  // 0--不使用掩码 1--使用掩码
+        void dump(std::ostream &os);
     };
 
 #pragma pack(pop)
@@ -64,7 +65,6 @@ namespace sq
      * @return ws_package
      */ 
     ws_package parser_websocket_msg(const unsigned char*data,int len);
-    uint32_t sha1base64(uint8_t *in, uint64_t in_len, char *out);
 
     void hex_print(const char*data,int size);
 }

@@ -6,12 +6,10 @@
 #include "reactor.h"
 using namespace std;
 
-using on_message_fun_t = std::function<int(void*package, int size,void*from)>;
-using on_open_fun_t = std::function<void(void*handler)>;
-using on_close_fun_t = std::function<void(void*handler)>;
+using on_message_fun_t 	= std::function<int(void*handler,void*package, int size)>;
+using on_open_fun_t 	= std::function<void(void*handler)>;
+using on_close_fun_t 	= std::function<void(void*handler)>;
 
-using on_session_connected_fun_t = std::function<void(void*handler)>;
-using on_session_disconnected_fun_t = std::function<void(void*handler)>;
 
 namespace sq
 {
@@ -34,6 +32,9 @@ namespace sq
 		event_handler(event_reactor *r);
 		virtual ~event_handler(){};
 		
+		void  	set_id(int32_t id){m_id=id;}
+		int32_t get_id(){return m_id;}
+
 		virtual fd_t get_fd()=0;
 		
 		virtual int  open();
@@ -70,8 +71,10 @@ namespace sq
 		void acquire_lock() { m_lock.lock(); };
 		void release_lock() { m_lock.unlock(); };
 		
+
 	protected:
 		std::mutex  m_lock;
 		handle_state m_state=handle_state::handle_init;
+		int m_id=0;
 	};
 }

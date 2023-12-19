@@ -25,7 +25,7 @@ endif(CMAKE_SYSTEM_NAME MATCHES "Windows")
 add_library(${app_name} SHARED ${SRC_FILES} )
 
 TARGET_LINK_LIBRARIES(${app_name} sqbz sqtp   )
-
+add_dependencies(${app_name} sqtp sqbz)
 #add_custom_command(TARGET ${app_name} 
 #	POST_BUILD 
  # COMMAND echo "Generating log.txt file..."

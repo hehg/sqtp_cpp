@@ -123,6 +123,7 @@ namespace sq_plug
 	   string m_sim_log_name = "sim_trade";
 	   double m_new_order = 0; //竞争单
 	   int  m_handup_case = 0;
+	   double  m_delay_for_one_quot=1; //每笔行情的延长
 
 	   double m_cancel_match_rate = 0.5;//撤单时可能成交的比例
 	   std::vector<match_result> m_pre_match_result;//撤单预成交结果

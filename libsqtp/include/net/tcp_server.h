@@ -10,42 +10,52 @@ Copyright (c) 2003-2015
 #include "reactor.h"
 #include "net_socket.h"
 #include "log/sq_logger.h"
+#include "net/tcp_channel.h"
 namespace sq
 {
 	
-
 	class event_reactor;
-	class tcp_handler;
+
+	
 	/**
 	 * tcp监听服务
 	*/
 	class tcp_server:public  event_handler
 	{
 	public:
-		tcp_server(){}
-		tcp_server(event_reactor*r):event_handler(r){  
+		tcp_server(on_tcp_channel_msg_fun_t on_msg,
+				   event_reactor *r = nullptr) : event_handler(r)
+		{
+			m_on_msg_callback = on_msg;
 		};
 		virtual ~tcp_server(){};
+		/**
+		 * @brief 打开监听地址 ex:tcp://127.0.0.1:1234
+		*/
 		int open(const  char* address);
-		void close();
 
-		//连接建立之后此函数被回调
-		virtual void on_session_connected(fd_t socket)=0;
+		//void close();
+
+		void run();
+
 		fd_t get_fd(){return m_fd;}
 
-		tcp_server& reg_session_connected(on_session_connected_fun_t f){
+		tcp_server& reg_session_connected(on_tcp_channel_connected_fun_t f){
 			m_session_connected_callback=f;
 			return *this;
 		}
-		tcp_server& reg_session_disconnected(on_session_disconnected_fun_t f){
+		tcp_server& reg_session_disconnected(on_tcp_channel_disconnected_fun_t f){
 			m_session_disconnected_callback=f;
 			return *this;
 		}
 	protected:
+		void on_session_close(void *handler);
+		int on_session_message(void*handler,void *msg, int size);
 		void on_read();
-		fd_t m_fd= invalid_fd;
-		on_session_connected_fun_t m_session_connected_callback=nullptr;
-		on_session_disconnected_fun_t m_session_disconnected_callback=nullptr;
+		fd_t m_fd = invalid_fd;
+		on_tcp_channel_msg_fun_t            m_on_msg_callback			    =nullptr;
+		on_tcp_channel_connected_fun_t 		m_session_connected_callback	=nullptr;
+		on_tcp_channel_disconnected_fun_t 	m_session_disconnected_callback	=nullptr;
 	};
 
 }

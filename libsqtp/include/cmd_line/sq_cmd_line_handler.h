@@ -1,14 +1,13 @@
 #pragma once
 #include <stdio.h>
-#if SUPPORT_READLINE
-#include <readline/readline.h>
-#include <readline/history.h>
-#endif
+#ifdef SUPPORT_READLINE
+
+
 
 namespace sq
 {
     /**
-     * @brief 控制台命令处理器
+     * @brief 控制台命令处理器 使用了 readline 库，需要提前安装
     */
     class sq_cmd_line_handler
     {
@@ -24,6 +23,5 @@ namespace sq
         /* data */
     };
     
-    
-    
 }
+#endif

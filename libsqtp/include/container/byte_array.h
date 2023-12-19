@@ -84,6 +84,6 @@ namespace sq
 		}
 		int size() { return N; }
 
-		char m_data[N];
+		char m_data[N]={0};
 	};
 }

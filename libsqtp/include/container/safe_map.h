@@ -46,7 +46,7 @@ namespace sq
             std::unique_lock<std::mutex> lock(mutex_);
             return map_.size();
         }
-
+        //遍历
         void for_each(call_back_fun fun)
         {
             std::unique_lock<std::mutex> lock(mutex_);

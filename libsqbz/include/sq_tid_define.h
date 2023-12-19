@@ -42,12 +42,15 @@ namespace sq
    
 	//查询类
 	const int tid_query_req = 301; 			//查询请求（通用）
+	const int tid_query_rsp = 302; 			//查询应答（通用）
 	const int tid_position_rsp = 302;		///持仓查询应答
 	const int tid_query_money_rsp = 303;	///资金查询应答
 	const int tid_query_order_rsp = 304;	//订单查询应答
 	const int tid_query_match_rsp = 305;	//成交查询应答
-	const int tid_query_rsp = 306; 			//查询应答（通用）
+	
 	const int tid_query_comb_position_rsp = 307;		///组合持仓查询应答
+	const int tid_query_contract_req=308; 		//查询合约
+	const int tid_query_contract_rsp=309; 		//查询合约
 	//股票相关
 	const int tid_risk_nty_trade_self = 100;	//风控通知 自成交
 	const int tid_stock_l2_quot = 101; 			//股票L2

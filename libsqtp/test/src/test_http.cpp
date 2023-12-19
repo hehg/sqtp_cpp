@@ -7,22 +7,6 @@
 #include <chrono>
 using namespace sq;
 
-SQ_TEST(test_http_client)
-{
-    auto t_fun=[](){
-        sq_reactor*r=get_default_reactor();
-        http_client cli;
-        cli.get("http://127.0.0.1:8000/");
-        while (true)
-        {
-           r->loop_once();
-        }
-        
-    };
-    std::thread t(t_fun);
-
-    t.join();
-}
 
 SQ_TEST(test_http_parser_req)
 {

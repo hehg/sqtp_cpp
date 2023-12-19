@@ -496,7 +496,7 @@ namespace sq
                 m_body_begin = data + i;
                 m_body_size = size - i;
                 // finish
-                return size;
+                //return size;
             }
 
             default:
@@ -505,7 +505,14 @@ namespace sq
         }
 
         // check
-
-        return 0;
+        if(state == BODY)
+        {
+            return size;
+        }
+        //还不是一个完整的数据包
+        else{
+            return 0;
+        }
+        
     }
 }

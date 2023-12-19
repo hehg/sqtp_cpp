@@ -1,8 +1,10 @@
 #include "pack/struct_reflect.h"
 #include <assert.h>
 #include <sstream>
+#include <algorithm>
 #include "text/json.hpp"
 #include "fmt/format.h"
+#include "text/kv_parser.h"
 namespace sq
 {
     std::unordered_map<std::string, struct_reflect *> s_desc_map;
@@ -26,6 +28,9 @@ namespace sq
             {
             case field_type_t::type_bool:
                 val=fmt::to_string((bool)*(bool *)(self + it->m_offset));
+                break;
+            case field_type_t::type_char:
+                val=fmt::to_string((char)*(char *)(self + it->m_offset));
                 break;
             case field_type_t::type_int8:
                val=fmt::to_string((int)*(int8_t *)(self + it->m_offset));
@@ -124,6 +129,9 @@ namespace sq
             case field_type_t::type_bool:
                 out << (int)(*(int8_t *)(self + it->m_offset));
                 break;
+            case field_type_t::type_char:
+                out << (char)(*(char *)(self + it->m_offset));
+                break;
             case field_type_t::type_int8:
                 out << (int)(*(int8_t *)(self + it->m_offset));
                 break;
@@ -215,6 +223,9 @@ namespace sq
                 case field_type_t::type_bool:
                     js[it->m_name] = (bool)*(bool *)(self + it->m_offset);
                     break;
+                case field_type_t::type_char:
+                    js[it->m_name] = (char)*(char *)(self + it->m_offset);
+                    break;
                 case field_type_t::type_int8:
                     js[it->m_name] = (int)*(int8_t *)(self + it->m_offset);
                     break;
@@ -295,5 +306,98 @@ namespace sq
         }
 
         out << js.dump();
+    }
+
+    void struct_reflect::from_string(void *obj, const char*str)
+    {
+        char *self = (char *)obj;
+        kv_parser parser;
+        parser.parser(str);
+        for(const auto &it:m_fields)
+        {
+            if (it.m_type == field_type_t::type_bool)
+            {
+                *(bool *)(self + it.m_offset)=parser.get_as_bool(it.m_name.c_str());
+            }
+            else if (it.m_type == field_type_t::type_char)
+            {
+                std::string s = parser.get_as_string(it.m_name.c_str());
+                if (s.empty())
+                {
+                    *(char *)(self + it.m_offset) = '\0';
+                }
+                else
+                {
+                    *(char *)(self + it.m_offset) = s[0];
+                }
+            }
+            else if (it.m_type == field_type_t::type_int8)
+            {
+                int val=parser.get_as_int(it.m_name.c_str());
+                *(int8_t *)(self + it.m_offset)=(int8_t)val;
+            }
+            else if (it.m_type == field_type_t::type_uint8)
+            {
+                int val=parser.get_as_int(it.m_name.c_str());
+                *(uint8_t *)(self + it.m_offset)=(uint8_t)val;
+            }
+            else if (it.m_type == field_type_t::type_int16)
+            {
+                int val=parser.get_as_int(it.m_name.c_str());
+                *(int16_t *)(self + it.m_offset)=(int16_t)val;
+            }
+            else if (it.m_type == field_type_t::type_uint16)
+            {
+                int val=parser.get_as_int(it.m_name.c_str());
+                *(uint16_t *)(self + it.m_offset)=(uint16_t)val;
+            }
+            else if (it.m_type == field_type_t::type_int32)
+            {
+                int val=parser.get_as_int(it.m_name.c_str());
+                *(int32_t *)(self + it.m_offset)=(int32_t)val;
+            }
+            else if (it.m_type == field_type_t::type_uint32)
+            {
+                int val=parser.get_as_int(it.m_name.c_str());
+                *(uint32_t *)(self + it.m_offset)=(uint32_t)val;
+            }
+            else if (it.m_type == field_type_t::type_int64)
+            {
+                int64_t val=parser.get_as_int64(it.m_name.c_str());
+                *(int64_t *)(self + it.m_offset)=(int64_t)val;
+            }
+            else if (it.m_type == field_type_t::type_uint64)
+            {
+                uint64_t val=parser.get_as_int64(it.m_name.c_str());
+                *(uint64_t *)(self + it.m_offset)=(uint64_t)val;
+            }
+            else if (it.m_type == field_type_t::type_float32)
+            {
+                float val=parser.get_as_double(it.m_name.c_str());
+                *(float *)(self + it.m_offset)=(float)val;
+            }
+            else if (it.m_type == field_type_t::type_float64)
+            {
+                double val=parser.get_as_double(it.m_name.c_str());
+                *(double *)(self + it.m_offset)=(double)val;
+            }
+            else if (it.m_type == field_type_t::type_char_array)
+            {
+                std::string val=parser.get_as_string(it.m_name.c_str());
+                if (val.empty())
+                {
+                    *(char *)(self + it.m_offset) = '\0';
+                }
+                else
+                {
+                    int size=(std::min)((int)it.m_size,(int)val.size());
+                    strncpy((char *)(self + it.m_offset),val.c_str(),size);
+                }
+                
+            }
+            else{
+                sq_panic("not support field_type=%d\n",(int)it.m_type);
+            }
+        }
     }
 }

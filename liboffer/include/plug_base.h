@@ -16,13 +16,7 @@ namespace sq_plug
     }
 };
 
-template<typename T>
-T from_string(const string& s) {
-    istringstream is(s);
-    T t;
-    if (!(is >> t)) throw bad_from_string();
-    return t;
-}
+
     class plug_base
     {
     public:
@@ -58,7 +52,7 @@ T from_string(const string& s) {
             std::set<T> rets;
             for (int i = 0; i < out.size(); i++)
             {
-                rets.insert(from_string<T>(out[i]));
+                rets.insert(sq_from_string<T>(out[i]));
             }
             return rets;
         }

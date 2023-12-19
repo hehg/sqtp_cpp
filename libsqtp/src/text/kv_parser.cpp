@@ -8,6 +8,7 @@ namespace sq
 	}
 	void kv_parser::parser(const char*str)
 	{
+		m_kv.clear();
 		vector<string> out;
 		sq_split(str, out);
 		for (size_t i = 0; i < out.size(); i++)
@@ -70,6 +71,15 @@ namespace sq
 		if (it != m_kv.end())
 		{
 			return std::atoi(it->second.c_str());
+		}
+		return 0;
+	}
+	int64_t kv_parser::get_as_int64(const char*key)
+	{
+		auto it = m_kv.find(key);
+		if (it != m_kv.end())
+		{
+			return std::atoll(it->second.c_str());
 		}
 		return 0;
 	}

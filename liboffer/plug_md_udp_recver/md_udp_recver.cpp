@@ -29,9 +29,10 @@ namespace sq_plug
         std::string local_ip=get_cfg_string("local_ip");
 
         m_udp_socket->open(url.c_str(),false,local_ip.c_str());
-        m_udp_socket->set_unblock();
+        unblock_socket(m_udp_socket->m_socket_fd);
+       
         int send_buf_size=get_cfg_int("recv_buf_size",10);
-        m_udp_socket->set_recv_buf_size(send_buf_size*1024);
+        net_set_recv_buffer_size(m_udp_socket->m_socket_fd,send_buf_size*1024);
 
         m_run_flag=true;
         m_engine = new std::thread(&md_udp_recver::run, this);

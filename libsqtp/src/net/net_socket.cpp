@@ -98,11 +98,10 @@ namespace sq
 		}
 		addr_in->sin_family = AF_INET;
 		addr_in->sin_port = htons(port);
-
-		if (::bind(s, &sock_addr, sizeof(sock_addr)) < 0)
+		int ret=::bind(s, &sock_addr, sizeof(sock_addr));
+		if(ret< 0)
 		{
-			perror("bind");
-			printf("bind to %s:%d\n", ip.c_str(), port);
+			sq_panic("bind socket failed,fd=%d,ret=%d,msg=%s\n",s,ret,get_last_error_info());
 			return -1;
 		}
 		return 0;
@@ -343,6 +342,7 @@ namespace sq
 			}
 			else if (ret == -1)
 			{
+				printf("sendto err,ret=%d,msg=%s\n",ret,get_last_error_info());
 				return -1;
 			}
 			else
@@ -454,20 +454,7 @@ namespace sq
 		close_socket(m_socket_fd);
 	}
 
-	int32_t udp_socket::set_unblock()
-	{
-		unblock_socket(m_socket_fd);
-		return 0;
-	}
-
-	void udp_socket::set_send_buf_size(int size)
-	{
-		net_set_send_buffer_size(m_socket_fd, size);
-	}
-	void udp_socket::set_recv_buf_size(int size)
-	{
-		net_set_recv_buffer_size(m_socket_fd, size);
-	}
+	
 
 	int32_t udp_socket::send_to_dest(const char *buf, int32_t buf_len) const
 	{
@@ -497,7 +484,7 @@ namespace sq
 				}
 				else
 				{
-					perror("sendto");
+					printf("sendto error,ret=%d,msg=%s\n",ret,get_last_error_info());
 					return -1;
 				}
 			}
@@ -721,7 +708,7 @@ namespace sq
 			if (++repeat > 100)
 			{
 				perror("udp_socket::send_to_dest error");
-				return ret;
+				return err_net_connect;
 			}
 			if (ret == -1)
 			{
@@ -737,14 +724,14 @@ namespace sq
 				}
 				else
 				{
-					perror("sendto");
-					return -1;
+					printf("sendto error,ret=%d,msg=%s\n",ret,get_last_error_info());
+					return err_net_connect;
 				}
 			}
 
 		} while (ret < 0);
 
-		return ret;
+		return ok;
 	}
 
 	int net_connect(fd_t fd, const char *ip, int port, int timeout)

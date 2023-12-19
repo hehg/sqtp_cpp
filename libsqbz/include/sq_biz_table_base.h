@@ -15,6 +15,10 @@ namespace sq
    public:
       using IndexTable_t = Map;
       using Table_t=std::vector<Val_t*>;
+
+      const char* get_db_name(){
+         return m_table_name.c_str();
+      }
       sq_biz_table_base()
       {
          auto it = m_Index.begin();
@@ -130,6 +134,7 @@ namespace sq
 
       IndexTable_t m_Index;
       Table_t      m_Table;
+      std::string  m_table_name;
    };
 
    

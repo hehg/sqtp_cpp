@@ -19,7 +19,7 @@
  * 	1. 基于xml 配置文件加载插件
  *  2. 提供与交易平台，行情平台的 函数接口
  *  3. 内存中维护交易相关的各种数据
- *  4. 整个框架非线程安全
+ *  4. 内部包含一个线程，负责将应答数据进行回调
 */
 
 extern "C" {
@@ -68,6 +68,16 @@ extern "C" {
 	SQ_DLL_EXPORT int sq_frame_cancel_order(int local_id);
  	//撤销某个方向的所有订单
     SQ_DLL_EXPORT void sq_frame_cancel_all_order(int direction);
+
+	//====查询接口===
+
+	/**
+	 * @brief 查询合约
+	 * @param market  市场编号，不指定表示所有市场
+	 * @param contract 合约id，空表示所有合约
+	 * 
+	*/
+	SQ_DLL_EXPORT int sq_frame_qry_contract(const char*market,const char*contract);
 
 	//=====其它接口===============
 	SQ_DLL_EXPORT const char* sq_frame_get_error_msg(int err_no);

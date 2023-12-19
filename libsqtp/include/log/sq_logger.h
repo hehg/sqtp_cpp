@@ -35,9 +35,9 @@ namespace sq
         char m_tmp_buf[1024];
         sq_spin_lock m_lock;
     };
-
+    //全局日志对象
     extern logger s_log;
-
+    
 #define log_info(...)                                             \
     {                                                             \
         if (log_info <= s_log.m_level)                            \

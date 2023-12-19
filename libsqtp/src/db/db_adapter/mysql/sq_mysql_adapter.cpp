@@ -4,7 +4,7 @@
 #include "log/sq_logger.h"
 #include "net/net_address.h"
 
-#if (SUPPORT_DB_MYSQL)
+#ifdef SUPPORT_DB_MYSQL
 #include <mysql.h>
 namespace sq
 {

@@ -1,3 +1,7 @@
+/**
+ * @brief 插件接口定义
+*/
+
 #pragma once
 #include <stdint.h>
 
@@ -37,4 +41,10 @@ extern "C"
 	SQ_DLL_EXPORT int plug_set_option(PLUG*,const char*key ,void*val);
 	SQ_DLL_EXPORT int plug_get_option(PLUG*,const char*key ,void*val);
 	SQ_DLL_EXPORT int plug_put(PLUG*,uint16_t tid, char* data,uint16_t size);
+
+
+	//扩展接口
+
+	int plug_place_order(int order_id,const char*market,const char* contract,double price,int volume,int order_type, int product_type);
+	int plug_cancel_order(int order_id);
 }

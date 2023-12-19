@@ -3,14 +3,30 @@
 #include "http/http_request.h"
 #include "http/http_response.h"
 #include "time/date_time.h"
+#include "net/net_address.h"
 #include "sq_macro.h"
 #include "log/sq_logger.h"
 #include "text/sq_string.h"
 namespace sq
 {
 
-    ws_client::ws_client()
+    ws_client::ws_client(on_ws_channel_msg_fun_t on_msg,
+			on_ws_channel_connected_fun_t on_connected ,
+			on_ws_channel_disconnected_fun_t on_disconnected ,
+			event_reactor *reactor)
     {
+        m_on_ws_channel_msg = on_msg;
+        m_on_ws_channel_connected = on_connected;
+        m_on_ws_channel_disconnected = on_disconnected;
+        if(reactor==nullptr)
+        {
+            m_reactor = get_default_reactor();
+        }
+        else{
+            m_reactor = reactor;
+        }
+        
+        
         add_head("Upgrade", "websocket");
         add_head("Host", "127.0.0.1");
         add_head("Connection", "Upgrade");
@@ -23,8 +39,9 @@ namespace sq
     }
     int ws_client::open(const char *server_ip, const char *url)
     {
-        int ret = tcp_client::open(server_ip);
-        if (ret!=ok)
+        m_ws_channel=add_ws_channel(server_ip);
+
+        if (m_ws_channel==nullptr)
         {
             return err_fail;
         }
@@ -40,176 +57,106 @@ namespace sq
             req << it->first << ": " << it->second << "\r\n";
         }
         req << "\r\n";
-        shake_line = req.str();
-        reg_on_msg(std::bind(&ws_client::on_message,
+        string shake_line = req.str();
+        m_ws_channel->reg_on_msg(std::bind(&ws_client::on_message,
                                             this, std::placeholders::_1,
                                             std::placeholders::_2,
                                             std::placeholders::_3));
        
-        //发送握手数据
-        send_data(shake_line.c_str(), shake_line.size());
+        //发送握手请求
+        m_ws_channel->send_data(shake_line.c_str(), shake_line.size());
         
         
         return ok;
     }
-
-    int ws_client::on_message(void *msg, int size, void *from)
+    void ws_client::close()
     {
+        if(m_ws_channel){
+            m_ws_channel->close();
+            m_ws_channel=nullptr;
+        }
+    }
+    ws_channel* ws_client::add_ws_channel(const char* server_address)
+	{
+		net_address address;
+		address.parse_ipv4(server_address);
+		if (address.m_port == 0){
+			throw("Invalid port");
+			return nullptr;
+		}
+			
+		ws_channel*channel=new ws_channel(m_reactor);
+		
+		int ret = net_connect(channel->get_fd(), address.m_ip.c_str(), address.m_port, 5);
 
-        if (m_state == 0) // 握手状态
+		if (ret == ok)
+		{
+			m_reactor->post_msg(EVENT_MSG_ADD_HANDLER, channel);
+			channel->state(handle_state::handle_opened);
+            channel->m_ws_state=ws_channel::ws_state_handshaking;
+		}
+		else{
+			delete channel;
+			return nullptr;
+		}
+
+		return channel;
+	}
+
+    int ws_client::on_message(void *from,void *msg, int size)
+    {
+        int count=0;
+        ws_channel* channel=static_cast<ws_channel*>(from);
+        //客户端收到握手应答
+        if (channel->m_ws_state == ws_channel::ws_state_handshaking) // 握手状态
         {
-            /* rsp from server
-            HTTP/1.1 101 Switching Protocols
-            Upgrade: websocket
-            Connection: Upgrade
-            Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
-            Sec-WebSocket-Protocol: chat
-
-            */
-            sq::http_response rsp;
-            int ret=rsp.parser_http((const char *)msg, size);
-            if(ret<0){
-                close();
-            }
-            rsp.dump();
-            // 检查应答
-            if (rsp.get_status_code() != 101)
+            count=channel->handshake_response((char*)msg,size);
+            if(channel->m_ws_state==ws_channel::ws_state_handshak_ok)
             {
-                log_debug("shake fail code={},reason={}\n", rsp.get_status_code(),
-                          rsp.get_status_reason());
-                close();
-                return size;
-            }
-
-            {
-                const char*val=rsp.get_head("upgrade");
-                if(val==nullptr){
-                    log_debug("invalid upgrade\n");
-                    close();
-                    return size;
-                }
-                
-                if (!compare_no_case(val,"websocket"))
+                if (m_on_ws_channel_connected)
                 {
-                    log_debug("invalid upgrade\n");
-                    close();
-                    return size;
+                    m_on_ws_channel_connected(channel);
                 }
             }
-            {
-                const char*val=rsp.get_head("sec-websocket-accept");
-                
-                if (val==nullptr || compare_no_case(val,"s3pPLMBiTxaQ9kYGzzhZRbK+xOo=")==false)
+            else{
+                if (m_on_ws_channel_disconnected)
                 {
-                    log_debug("invalid sec-websocket-accept,{}\n",val);
-                    close();
-                    return size;
+                    m_on_ws_channel_disconnected(channel);
                 }
-            }
-            log_debug("websocket client handshake ok\n");
-
-            m_state = 1;
-            if (m_open_handler)
-            {
-                m_open_handler(this);
-            }
-            if (rsp.m_body_size > 0)
-            {
-                on_ws_message(rsp.m_body_begin, rsp.m_body_size);
             }
         }
-        else if (m_state == 1)
+        else if (channel->m_ws_state == ws_channel::ws_state_handshak_ok)
         {
-            on_ws_message((const char *)msg, size);
+            count= on_ws_message((ws_channel*)from,(const char *)msg, size);
         }
         else
         {
             assert(false);
         }
-        return size;
+        return count;
     }
-    int ws_client::on_ws_message(const char*data,int size)
+    int ws_client::on_ws_message(ws_channel*ch,const char*data,int size)
     {
         ws_package package=parser_websocket_msg((const unsigned char*)data,size);
         if(package.result!=ok){
+            log_warn("parser websocket msg error,result={}\n",package.result);
             close();
-            return ok;
+            return 0;
         }
         //回调给应用层
-        if(m_on_ws_msg){
-            m_on_ws_msg(package.body,package.body_size);
+        if(m_on_ws_channel_msg){
+            m_on_ws_channel_msg(ch,package.body,package.body_size);
         }
-		return ok;
-    }
-    int ws_client::send_ws_package(uint8_t opcode, const char *data, uint32_t size, bool fin)
-    {
-        if(m_state!=1){
-            printf("not connected can not send data\n");
-            return err_fail;
-        }
-        assert(size+sizeof(ws_header)<sizeof(tmp_buf));
-        
-        ws_header *hdr = (ws_header *)tmp_buf;
-        char* body=tmp_buf+sizeof(ws_header);
-
-        if (fin)
-        {
-            hdr->fin = 1;
-        }
-        else
-        {
-            hdr->fin = 0;
-        }
-        hdr->rsv1 = 0;
-        hdr->rsv2 = 0;
-        hdr->rsv3 = 0;
-        hdr->opcode = opcode;
-
-        hdr->masked = 1;  //client must set as  1
-        if (size <= 125)
-        {
-            hdr->payloadlen = size;
-        }
-        else if (size <= 0xFFFF)
-        {
-            hdr->payloadlen = 126;
-            *(uint16_t *)(tmp_buf + sizeof(ws_header)) = htons(size);
-            body+=2;
-        }
-        else
-        {
-            hdr->payloadlen = 127;
-            *(uint64_t *)(tmp_buf + sizeof(ws_header)) = htonll(size);
-            body+=8;
-        }
-        //set mask key
-        mask_key_t mask;
-        mask.integer=(uint32_t)(date_time::get_now_us()&0xffff);
-        *((uint32_t*)body)=mask.integer;
-        body+=sizeof(mask_key_t);
-        if (hdr->masked)
-        {
-            for (uint32_t i = 0; i < size; i++)
-            {
-                *(body++) = data[i] ^ mask.char_array[i % 4];
-            }
-        }
-        else{
-            memcpy(body,data,size);
-            body+=size;
-        }
-
-        int pkg_size=body-tmp_buf;
-        bool ret=send_data(tmp_buf,pkg_size);
-        if(ret){
-            printf("send data ok ,body_size=%d\n",size);
-        }
-        return 0;
+		return package.pkg_size;
     }
 
     int ws_client::send_ws_message(const char *msg, int size)
     {
-       
-        return send_ws_package(OPCODE_TEXT,msg,size);
+        if (m_ws_channel == nullptr)
+        {
+            printf("ws_channel is null\n");
+            return err_fail;
+        }
+        return m_ws_channel->send_ws_package( msg, size,OPCODE_TEXT,true);
     }
 }

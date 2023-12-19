@@ -168,6 +168,7 @@ namespace sq_plug
 		m_all_match_type = get_cfg_int("all_match_type");
 		m_enable_best_match = get_cfg_bool("enable_best_match");
 		m_support_sim_log = get_cfg_bool("support_sim_log");
+		m_delay_for_one_quot=get_cfg_double("delay_for_one_quot");
 		m_quot_file_path = get_cfg_string("quot_file");
 		m_quot_file_have_header=get_cfg_bool("quot_file_have_header");
 		if(!m_quot_file_have_header){
@@ -553,7 +554,8 @@ namespace sq_plug
 				}
 			}
 #endif
-			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			static int delay=(int)m_delay_for_one_quot*1000;
+			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 		}
 
 		printf("stop run engine thread\n");

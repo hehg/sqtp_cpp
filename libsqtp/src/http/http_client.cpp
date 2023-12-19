@@ -6,6 +6,7 @@
 #include "http/http_response.h"
 namespace sq
 {
+    #if 0
     http_client::http_client()
     {
         sq_reactor*r=get_default_reactor();
@@ -107,5 +108,6 @@ Content-Length: 673
          ++p;
        }
        return size;
-     }  
+     } 
+     #endif 
 }

@@ -2,7 +2,7 @@
 #include "sq_define.h"
 #include "db/db_adapter/db_adapter.h"
 #include <vector>
-#if SUPPORT_DB_MYSQL
+#ifdef SUPPORT_DB_MYSQL
 
 namespace sq
 {

@@ -7,9 +7,10 @@
 #include "container/byte_array.h"
 namespace sq
 {
-   /** 序列化 二进制
- * 
- */
+   /** 
+    * @brief 序列化 二进制,
+    * 将各种信息已二进制的形式序列化到一个 buffer 中
+   */
 
    class sq_pack
    {
@@ -163,9 +164,9 @@ namespace sq
       int m_capacity = 0;
    };
 
-   /** 反序列化 二进制
- * 
- */
+   /** 
+    * @brief 反序列化 二进制
+   */
    class sq_unpack
    {
    public:

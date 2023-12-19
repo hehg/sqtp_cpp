@@ -2,6 +2,7 @@
 #include "net/tcp_client.h"
 namespace sq
 {
+    #if 0
     class tcp_client;
 
     class http_client
@@ -15,4 +16,5 @@ namespace sq
         tcp_client *m_tcp;
         int rsp_state=0;
     };
+    #endif
 }

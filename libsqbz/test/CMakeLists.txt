@@ -6,7 +6,7 @@ include (../../head.cmake)
 
 include_directories(${PROJECT_SOURCE_DIR}/libsqtp/include)
 include_directories(${PROJECT_SOURCE_DIR}/libsqbz/include)
-aux_source_directory(./ SRC_FILES)
+aux_source_directory(./src SRC_FILES)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 

@@ -12,7 +12,7 @@
 
 using namespace sq;
 
-//#if defined(SUPPORT_DB_MYSQL)
+#ifdef SUPPORT_DB_MYSQL
 
 SQ_TEST(test_sq_mysql_adapter)
 {
@@ -59,4 +59,4 @@ SQ_TEST(test_sq_mysql_adapter)
   db.disconnect();
 }
 
-//#endif
+#endif

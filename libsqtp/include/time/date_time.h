@@ -39,19 +39,24 @@ namespace sq{
 	public:
 	    date_time(int year,int month,int day,int hour=0,int minute=0,int second=0,
 		int microsecond=0);
-
+		/**
+		 * @brief 获取当前时间
+		*/
 		static date_time now();
-		//从纳秒时间戳构造
+		/**
+		 * @brief 从纳秒时间戳构造
+		 */
 		static date_time make_from_timestamp(uint64_t time_stamp);
 
-		/**将当前时间以字符串的格式输出
-		@param format 格式设置，目前支持的格式有：
-		     YYYYMMDD
-			 YYYY-MM-DD
-			 YYYY-MM-DD HH:mm:SS.sss
-			 HH:mm:SS
-			 HH:mm:SS.sss
-			 默认格式是YYYY-MM-DD HH:mm:SS.sss
+		/**
+		 * @brief 将当前时间以字符串的格式输出
+		 * @param format 格式设置，目前支持的格式有：
+					YYYYMMDD
+					YYYY-MM-DD
+					YYYY-MM-DD HH:mm:SS.sss
+					HH:mm:SS
+					HH:mm:SS.sss
+					默认格式是YYYY-MM-DD HH:mm:SS.sss
 		@return 输出是格式化后的字符串
 		*/
 		string format(string format); 

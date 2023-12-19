@@ -68,6 +68,11 @@ namespace sq
         def_error_code(err_invalid_param),
         def_error_code(err_again),
         def_error_code(err_sql_exec),
+        def_error_code(err_db_connect),
+        def_error_code(err_net_connect),
+        def_error_code(err_invalid_net_address),
+        def_error_code(err_load_data),
+        def_error_code(err_no_data),
 		//offer
 		def_error_code(err_no_exit_order),
 		def_error_code(err_no_login),

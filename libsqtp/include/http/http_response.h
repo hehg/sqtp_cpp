@@ -13,6 +13,10 @@ namespace sq
         {
         }
         void dump(); 
+        /**
+         * @brief 解析 http 信息
+         * @return 解析的字节数
+        */
         int parser_http(const char *data, int size);
 
         inline int get_status_code(){return std::atoi(m_status_code.c_str());}

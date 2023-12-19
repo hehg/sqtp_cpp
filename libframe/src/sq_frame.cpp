@@ -34,7 +34,6 @@ static std::vector<plug_obj*> m_bz_plugs;
 static std::mutex s_run_flag_lock;
 static bool m_run_flag=false;
 static sq_frame_callback_func_t  s_callback_func = nullptr;
-static sq_frame_callback_js_func_t  s_callback_js_func = nullptr;
 static void * s_callback_param=nullptr;
 
 static sq_ts_change s_ts_change;
@@ -157,7 +156,7 @@ static void init_frame()
 	}
 	catch (const std::exception &e)
 	{
-		log_error("open config fiel fail,file={}\n",m_config_path.c_str());
+		log_error("open config file fail,file={}\n",m_config_path.c_str());
 		std::cerr << e.what() << '\n';
 		assert(false);
 	}
@@ -236,34 +235,6 @@ void sq_frame_run()
 			{
 				s_callback_func(msg->tid, msg->data, msg->size, s_callback_param);
 			}
-	#if 0
-			//使用json 回调方式，框架负责转成json 回调给上层
-			else if(s_callback_js_func){
-				
-				if(msg->tid==tid_market_data){
-					sq_quot*quot=(sq_quot*)msg->data;
-					std::stringstream ss;
-					quot->to_json(ss);
-					string s=ss.str();
-					s_callback_js_func(msg->tid, (char*)s.c_str());
-				}
-			
-				else if(msg->tid==tid_order_state){
-					sq_order_state_ntf*ntf=(sq_order_state_ntf*)msg->data;
-					std::stringstream ss;
-					ntf->to_json(ss);
-					string s=ss.str();
-					s_callback_js_func(msg->tid, (char*)s.c_str());
-				}
-				else if(msg->tid==tid_order_match){
-					sq_order_match_ntf*ntf=(sq_order_match_ntf*)msg->data;
-					std::stringstream ss;
-					ntf->to_json(ss);
-					string s=ss.str();
-					s_callback_js_func(msg->tid, (char*)s.c_str());
-				}
-			}
-		#endif
 
 			m_msg_pool->free(msg);
 		}
@@ -395,10 +366,7 @@ int sq_frame_set_option(const char*key,void*val)
 		sq_frame_callback_func_t fun=(sq_frame_callback_func_t)val;
 		s_callback_func = fun;
 	}
-	else if(strcmp(key,"callback_js_func")==0){
-		sq_frame_callback_js_func_t fun=(sq_frame_callback_js_func_t)val;
-		s_callback_js_func = fun;
-	}
+	
 	else if(strcmp(key,"callback_param")==0)
 	{
 		s_callback_param=val;

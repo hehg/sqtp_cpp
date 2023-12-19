@@ -1,4 +1,8 @@
 ﻿#pragma once
+/**
+ * @brief 性能日志，感觉用处不大，择机删除
+ * @todo delete
+*/
 #include "sq_define.h"
 #include <fstream>
 #include "sync/sq_spin_lock.h"

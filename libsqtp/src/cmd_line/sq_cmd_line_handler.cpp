@@ -1,7 +1,9 @@
 #include "cmd_line/sq_cmd_line_handler.h"
 #include <string.h>
 #include <stdlib.h>
-
+#ifdef SUPPORT_READLINE
+#include <readline/readline.h>
+#include <readline/history.h>
 namespace sq
 {
     sq_cmd_line_handler::sq_cmd_line_handler(/* args */)
@@ -36,3 +38,4 @@ namespace sq
         }
     }
 } // namespace name
+#endif
